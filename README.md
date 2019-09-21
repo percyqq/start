@@ -147,7 +147,7 @@ docker exec -it 775c7c9ee1e1 /bin/bash
 docker run -it --name ubuntu_dev -p 127.0.0.1:10022:22 -p 6379:6379 ubuntu/dev:v1.2 /bin/bash
 docker run -it --name ubuntu_dev  ubuntu/dev:v1.2 /bin/bash
 
-export http_proxy=http://Q00492133:QQ900512\!@proxy.huawei.com:8080/
+export http_proxy=http://Q00492133:password\!@proxy.xx.com:8080/
 
 
 docker commit -a "QQ" -m "add utils" c25bd2b201dd redis:v1.1
