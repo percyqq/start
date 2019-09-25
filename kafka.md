@@ -7,7 +7,7 @@ Kafka一个很重要的特性就是，只需写入一次消息，可以支持任
   比如：订单生产后，产生了一条消息==>后续  【库存】需要消费当前的消息，【积分】也需要~
 
 
-![多分组](https://github.com/percyqq/start/blob/master/kafka%20group.png?raw=true)
+![多分组](https://github.com/percyqq/start/blob/master/pic/kafka%20group.png?raw=true)
 
 消费组与分区重平衡
 可以看到，当新的消费者加入消费组，它会消费一个或多个分区，而这些分区之前是由其他消费者负责的；
