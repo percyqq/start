@@ -263,3 +263,9 @@ insert into t values(12, ooo);
 (3)InnoDB使用插入意向锁，可以提高插入并发；
 
 
+
+
+缓冲池(buffer pool)
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962450&idx=1&sn=ce17c4da8d20ce275f75d0f2ef5e40c9&chksm=bd2d098e8a5a809834aaa07da0d7546555385543fb6d687a7cf94d183ab061cd301a76547411&scene=21#wechat_redirect
+
+
