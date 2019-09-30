@@ -1,0 +1,65 @@
+https://www.jianshu.com/p/cf3d157e245f
+
+对于线上系统突然产生的运行缓慢问题，如果该问题导致线上系统不可用，<br>
+那么首先需要做的就是，导出jstack和内存信息，然后重启系统，尽快保证系统的可用性。<br>
+这种情况可能的原因主要有两种：<br>
+* 代码中某个位置读取数据量较大，导致系统内存耗尽，从而导致Full GC次数过多，系统缓慢；
+* 代码中有比较耗CPU的操作，导致CPU过高，系统运行缓慢；
+<br><br>
+
+外有几种情况也会导致某个功能运行缓慢，但是不至于导致系统不可用：<br>
+* 代码某个位置有阻塞性的操作，导致该功能调用整体比较耗时，但出现是比较随机的；
+* 某个线程由于某种原因而进入WAITING状态，此时该功能整体不可用，但是无法复现；
+* 由于锁使用不当，导致多个线程进入死锁状态，从而导致系统整体比较缓慢。
+
+<br><br>
+
+1. Full GC次数过多
+==
+* 线上多个线程的CPU都超过了100%，通过jstack命令可以看到这些线程主要是垃圾回收线程
+* 通过jstat命令监控GC情况，可以看到Full GC次数非常多，并且次数在不断增加。
+
+>>top -Hp 9 <br>
+
+    top - 08:31:16 up 30 min,  0 users,  load average: 0.75, 0.59, 0.35
+    Threads:  11 total,   1 running,  10 sleeping,   0 stopped,   0 zombie
+    %Cpu(s):  3.5 us,  0.6 sy,  0.0 ni, 95.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+    KiB Mem:   2046460 total,  1924856 used,   121604 free,    14396 buffers
+    KiB Swap:  1048572 total,        0 used,  1048572 free.  1192532 cached Mem 
+    PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+    10 root      20   0 2557160 289824  15872 R 79.3 14.2   0:41.49 java
+    11 root      20   0 2557160 289824  15872 S 13.2 14.2   0:06.78 java 
+   
+>>printf "%x\n" 10<br>  ==> a   <br>
+这里打印结果说明该线程在jstack中的展现形式为0xa，通过jstack命令我们可以看到如下信息：
+
+    "main" #1 prio=5 os_prio=0 tid=0x00007f8718009800 nid=0xb runnable [0x00007f871fe41000]
+      java.lang.Thread.State: RUNNABLE
+      at com.aibaobei.chapter2.eg2.UserDemo.main(UserDemo.java:9)
+    "VM Thread" os_prio=0 tid=0x00007f871806e000 nid=0xa runnable 
+<br>
+这里的VM Thread一行的最后显示nid=0xa，这里nid的意思就是操作系统线程id的意思。
+而VM Thread指的就是垃圾回收的线程。这里我们基本上可以确定，当前系统缓慢的原因主要是垃圾回收过于频繁，导致GC停顿时间较长。
+我们通过如下命令可以查看GC的情况：
+>>jstat -gcutil 9 1000 10
+<br>
+
+    S0     S1     E      O     M      CCS     YGC     YGCT   FGC     FGCT     GCT
+    0.00   0.00   0.00  75.07  59.09  59.60   3259    0.919  6517    7.715    8.635
+    0.00   0.00   0.00   0.08  59.09  59.60   3306    0.930  6611    7.822    8.752
+    0.00   0.00   0.00   0.08  59.09  59.60   3351    0.943  6701    7.924    8.867
+    0.00   0.00   0.00   0.08  59.09  59.60   3397    0.955  6793    8.029    8.984
+<br>
+
+可以看到，这里FGC指的是Full GC数量，这里高达6793，而且还在不断增长。从而进一步证实了是由于内存溢出导致的系统缓慢。
+那么这里确认了内存溢出，但是如何查看你是哪些对象导致的内存溢出呢，这个可以dump出内存日志，然后通过eclipse的mat工具进行查看，
+如下是其展示的一个对象树结构：
+
+总结来说，对于Full GC次数过多，主要有以下两种原因：
+* 代码中一次获取了大量的对象，导致内存溢出，此时可以通过eclipse的mat工具查看内存中有哪些对象比较多；
+* 内存占用不高，但是Full GC次数还是比较多，此时可能是显示的System.gc()调用导致GC次数过多，这可以通过添加-XX:+DisableExplicitGC来禁用JVM对显示GC的响应。
+
+
+2. CPU过高
+==
+
