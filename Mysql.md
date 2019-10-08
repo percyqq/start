@@ -17,8 +17,7 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097
 三，可重复读(Repeated Read, RR)
 ==
 这是InnoDB默认的隔离级别，在RR下：  
-*(1)普通的select使用快照读(snapshot read)，这是一种不加锁的一致性读(Consistent Nonlocking Read)，  
-  底层使用MVCC来实现，共享锁与排他锁的玩法是：   
+* (1)普通的select使用快照读(snapshot read)，这是一种不加锁的一致性读(Consistent Nonlocking Read)，底层使用MVCC来实现，共享锁与排他锁的玩法是：   
 >共享锁之间不互斥，简记为：读读可以并行  
 >排他锁与任何锁互斥，简记为：写读，写写不可以并行  
   
@@ -27,7 +26,7 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097
 >（2）写任务操作新克隆的数据，直至提交；  
 >（3）并发读任务可以继续读取旧版本的数据，不至于阻塞；  
 
-*(2)加锁的select(select ... in share mode / select ... for update), update, delete等语句，它们的锁，  
+* (2)加锁的select(select ... in share mode / select ... for update), update, delete等语句，它们的锁，  
 >依赖于它们是否在唯一索引(unique index)上使用了唯一的查询条件(unique search condition)，  
 >或者范围查询条件(range-type search condition)：  
 >在唯一索引上使用唯一的查询条件，会使用记录锁(record lock)，而不会封锁记录之间的间隔，
