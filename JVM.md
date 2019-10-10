@@ -1,7 +1,7 @@
   https://ifeve.com/case-of-hashmap-in-concurrency/  
 		并发环境下HashMap引起的full gc排查
   
-  
+	日志查看：cat stack.log | grep atw | sort | uniq -c | sort -nr | head -10  
     
       
 Java Hotspot G1 GC的一些关键技术  
