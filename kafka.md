@@ -1,3 +1,10 @@
+https://blog.csdn.net/u013573133/article/details/48142677  
+  Kafka史上最详细原理总结
+
+
+
+
+
 如何做到消息不丢失  
 ==
 * ACK 机制  
