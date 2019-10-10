@@ -1,3 +1,7 @@
+  https://ifeve.com/case-of-hashmap-in-concurrency/  
+		并发环境下HashMap引起的full gc排查
+  
+
 Java Hotspot G1 GC的一些关键技术
 https://tech.meituan.com/2016/09/23/g1.html
 
@@ -8,13 +12,13 @@ G1中几个重要概念
 Region
 传统的GC收集器将连续的内存空间划分为新生代、老年代和永久代（JDK 8去除了永久代，引入了元空间Metaspace），这种划分的特点是各代的存储地址
 （逻辑地址，下同）是连续的。如下图所示：
+  
 
 
 
+  
 
-
-
-
+  
 
 
 
