@@ -2,8 +2,12 @@
 		并发环境下HashMap引起的full gc排查
   
 	日志查看：cat stack.log | grep atw | sort | uniq -c | sort -nr | head -10  
-    
-      
+  https://mp.weixin.qq.com/s/iN_zwgpOudlYNem4jQu1ew  
+		类加载器的GC排查
+
+
+
+ 
 Java Hotspot G1 GC的一些关键技术  
 https://tech.meituan.com/2016/09/23/g1.html
 
