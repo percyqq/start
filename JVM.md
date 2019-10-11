@@ -11,7 +11,8 @@ https://tech.meituan.com/2016/09/23/g1.html
 https://tech.meituan.com/2017/12/29/jvm-optimize.html  
 	从实际案例聊聊Java应用的GC优化
 
-
+https://tech.meituan.com/2019/01/03/spring-boot-native-memory-leak.html  
+	Spring Boot引起的“堆外内存泄漏”排查及经验总结
 
 
 G1中几个重要概念
