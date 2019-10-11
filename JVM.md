@@ -1,8 +1,11 @@
-  https://ifeve.com/case-of-hashmap-in-concurrency/  
-		并发环境下HashMap引起的full gc排查
+https://www.cnblogs.com/aspirant/p/8662690.html    
+	JVM的垃圾回收机制 总结(垃圾收集、回收算法、垃圾回收器)
+  
+https://ifeve.com/case-of-hashmap-in-concurrency/  
+        并发环境下HashMap引起的full gc排查
   
 	日志查看：cat stack.log | grep atw | sort | uniq -c | sort -nr | head -10  
-  https://mp.weixin.qq.com/s/iN_zwgpOudlYNem4jQu1ew  
+https://mp.weixin.qq.com/s/iN_zwgpOudlYNem4jQu1ew  
 		类加载器的GC排查
  
 https://tech.meituan.com/2016/09/23/g1.html  
