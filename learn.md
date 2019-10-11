@@ -8,11 +8,19 @@ https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html
 https://tech.meituan.com/2019/02/28/java-dynamic-trace.html  
     Java动态追踪技术探究  
     
+https://tech.meituan.com/2019/09/05/java-bytecode-enhancement.html   
+    字节码增强技术探索  
+    
+    
 https://tech.meituan.com/2014/08/20/innodb-lock.html  
     Innodb中的事务隔离级别和锁的关系  
     
-https://mp.weixin.qq.com/s/V1hGa6D9aGrP6PiCWEmc0w
-    架构师之路18年精选100篇
+https://mp.weixin.qq.com/s/V1hGa6D9aGrP6PiCWEmc0w  
+    架构师之路18年精选100篇  
+
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651960945&idx=1&sn=d08f33c5f317fee8956252da8e0236b6&chksm=bd2d03ad8a5a8abb0370b826b7384a4095a5ed36238f0911d102b0ceee8e5d2fbe3bc80c56d9&scene=21#wechat_redirect
+    架构师之路17年精选80篇      
+    
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959942&idx=1&sn=e9d3fe111b8a1d44335f798bbb6b9eea&chksm=bd2d075a8a5a8e4cad985b847778aa83056e22931767bb835132c04571b66d5434020fd4147f&scene=21#wechat_redirect  
     业界难题-“跨库分页”的四种方案  
@@ -53,7 +61,16 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959992&idx=1&sn=eb2fbd
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961620&idx=1&sn=d858c302799cad451656129885214767&chksm=bd2d0cc88a5a85de11ed376570f78a22954e88aad06f0138b3fbfb7be1968699421ac0b99889&scene=21#wechat_redirect
     关于MySQL内核，一定要知道的！  
     
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961455&idx=1&sn=4c26a836cff889ff749a1756df010e0e&chksm=bd2d0db38a5a84a53db91e97c7be6295185abffa5d7d1e88fd6b8e1abb3716ee9748b88858e2&scene=21#wechat_redirect      
+    1.插入InnoDB自增列，居然是表锁？  
     
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961461&idx=1&sn=b73293c71d8718256e162be6240797ef&chksm=bd2d0da98a5a84bfe23f0327694dbda2f96677aa91fcfc1c8a5b96c8a6701bccf2995725899a&scene=21#wechat_redirect    
-    InnoDB并发插入，居然使用意向锁？    
+    2.InnoDB并发插入，居然使用意向锁？    
+    
+    
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961508&idx=1&sn=9f31a95e5b8ec16fa0edc7de6087d2a1&chksm=bd2d0d788a5a846e3bf16d300fb9723047bd109fd22682c39bdf7ed4e77b167e333460f6987c&scene=21#wechat_redirect      
+    别废话，各种SQL到底加了什么锁？  
+    
+ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961444&idx=1&sn=830a93eb74ca484cbcedb06e485f611e&chksm=bd2d0db88a5a84ae5865cd05f8c7899153d16ec7e7976f06033f4fbfbecc2fdee6e8b89bb17b&scene=21#wechat_redirect     
+    InnoDB并发如此高，原因竟然在这？  
     
