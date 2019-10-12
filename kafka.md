@@ -1,6 +1,11 @@
 https://blog.csdn.net/u013573133/article/details/48142677  
   Kafka史上最详细原理总结
 
+http://xstarcd.github.io/wiki/Cloud/kafka_Working_Principles.html  
+  kafka工作原理
+
+https://www.cnblogs.com/likehua/p/3999538.html  
+  kafka入门：简介、使用场景、设计原理、主要配置及集群搭建（转）  
 
 
 
