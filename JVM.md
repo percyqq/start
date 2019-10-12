@@ -17,7 +17,10 @@ https://tech.meituan.com/2017/12/29/jvm-optimize.html
 https://tech.meituan.com/2019/01/03/spring-boot-native-memory-leak.html  
 	Spring Boot引起的“堆外内存泄漏”排查及经验总结
 
+https://www.toutiao.com/a6683710658250277380/  
+	JVM性能调优篇
 
+  
 G1中几个重要概念
 在G1的实现过程中，引入了一些新的概念，对于实现高吞吐、没有内存碎片、收集时间可控等功能起到了关键作用。下面我们就一起看一下G1中的这几个重要概念。
 
