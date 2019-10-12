@@ -60,7 +60,15 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959883&idx=1&sn=e7df85
     
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959992&idx=1&sn=eb2fbd7d7922db42a593c304e50a65b7&chksm=bd2d07648a5a8e72d489022ec6006274d7e43ab48449b255d5661658c2af8e9221977a9609ed&scene=21#wechat_redirect  
     100亿数据平滑数据迁移,不影响服务
-    
+
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962609&idx=1&sn=46e59691257188d33a91648640bcffa5&chksm=bd2d092d8a5a803baea59510259b28f0669dbb72b6a5e90a465205e9497e5173d13e3bb51b19&mpshare=1&scene=1&srcid=&sharer_sharetime=1564396837343&sharer_shareid=7cd5f6d8b77d171f90b241828891a85f&key=abd60b96b5d1f2e52ca45314fb2c95a67fad7a457fe265562eb51a1c026389d3f28c52359f96e920368ab44a5d08ebcbbe2ded474be2ba70731ed8b5dcc5dd68cc0eceb4989a74fb04e5055c78af8d38&ascene=1&uin=MTAwMjA4NTM0Mw%3D%3D&devicetype=Windows+7&version=62060739&lang=zh_CN&pass_ticket=tXA4xc7SZYamLpGZz5B6JwJa1ZRvZ4bRlmzFhXwEKeOfloPLulU0O80gsIQUiONb  
+    如何避免回表查询？什么是索引覆盖  
+
+
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962514&idx=1&sn=550c48c9395b52b7ec561741e86e5ce0&chksm=bd2d094e8a5a80589117a653a30d062b5760ec20f8ab9e2154a63ab782d3353d1b1da50b9bc2&scene=21#wechat_redirect  
+    同一个SQL语句，为啥性能差异咋就这么大呢
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962587&idx=1&sn=d197aea0090ce93b156e0774c6dc3019&chksm=bd2d09078a5a801138922fb5f2b9bb7fdaace7e594d55f45ce4b3fc25cbb973bbc9b2deb2c31&scene=21#wechat_redirect
+    如何利用工具，迅猛定位低效SQL
     
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961620&idx=1&sn=d858c302799cad451656129885214767&chksm=bd2d0cc88a5a85de11ed376570f78a22954e88aad06f0138b3fbfb7be1968699421ac0b99889&scene=21#wechat_redirect
     关于MySQL内核，一定要知道的！  
@@ -81,12 +89,10 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961508&idx=1&sn=9f31a9
     InnoDB并发如此高，原因竟然在这？  
     
 
-
-
-
-
-
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651962467&idx=1&sn=899ea157b0fc6f849ec80a4d055a309b&chksm=bd2d09bf8a5a80a972a2e16a190ed7dffe03f89015ead707bdfcc5aeb8388fb278f397c125f1&scene=21#wechat_redirect  
+    写缓冲(change buffer)，这次彻底懂了
 
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651960245&idx=1&sn=5cef3d8ca6a3e6e94f61e0edaf985d11&chksm=bd2d06698a5a8f7fc89056af619b9b7e79b158bceb91bdeb776475bc686721e36fb925904a67&scene=21#wechat_redirect  
     分布式ID生成器 | 架构师之路
+
