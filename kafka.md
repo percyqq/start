@@ -6,9 +6,11 @@ http://xstarcd.github.io/wiki/Cloud/kafka_Working_Principles.html
 
 https://www.cnblogs.com/likehua/p/3999538.html  
   kafka入门：简介、使用场景、设计原理、主要配置及集群搭建（转）  
-
-
-
+  
+https://blog.csdn.net/suifeng3051/article/details/48053965  
+  Kafka 设计与原理详解  
+  
+  
 
 如何做到消息不丢失  
 ==
