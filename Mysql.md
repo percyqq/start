@@ -1,3 +1,11 @@
+https://tech.meituan.com/2014/06/30/mysql-index.html  
+    MySQL索引原理及慢查询优化  
+
+
+
+
+
+
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097f882ff9d32f5cdf7922644d083&chksm=bd2d0d468a5a845026b7d2c211330a6bc7e9ebdaa92f8060265f60ca0b166f8957cbf3b0182c&scene=21#wechat_redirect
 
 
