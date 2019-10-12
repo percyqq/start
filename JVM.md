@@ -1,3 +1,6 @@
+https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html    
+	Java Garbage Collection Basics  
+
 https://www.cnblogs.com/aspirant/p/8662690.html    
 	JVM的垃圾回收机制 总结(垃圾收集、回收算法、垃圾回收器)
   
