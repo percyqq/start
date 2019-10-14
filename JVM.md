@@ -4,6 +4,10 @@ https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html
 https://blog.csdn.net/m0_37568814/article/details/88670280  
 JVM GC日志分析  
 
+https://www.cnblogs.com/1024Community/p/honery.html  
+	扒一扒JVM的垃圾回收机制   
+
+
 https://www.cnblogs.com/hexinwei1/p/9556259.html  
 JVM命令-java服务器故障排查  
 
