@@ -7,6 +7,10 @@ https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&u
 https://github.com/crossoverJie/JCSprout  
     Java 核心知识库  
 
+https://www.cnblogs.com/aspirant/p/7200523.html  
+Java 类加载机制(阿里)-何时初始化类  
+
+
 https://ifeve.com/overview/  
     Java NIO系列教程（一） Java NIO 概述   
 
@@ -55,6 +59,8 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959942&idx=1&sn=e9d3fe
     第三个库，5条数据的time最小值是1487501143
 
 
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651960200&idx=1&sn=fdec629caceee07b3946b6c338b8ceb7&chksm=bd2d06548a5a8f424dd32be960222edf5cecc3c1e5a8fcbb4cfff35e7da6787e702861131597&scene=21#wechat_redirect  
+    库存扣减还有这么多方案？ | 架构师之路  
 
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651960212&idx=1&sn=ab4c52ab0309f7380f7e0207fa357128&chksm=bd2d06488a5a8f5e3b7c9de0cc5936818bd9a6ed4058679ae8d819175e0693c6fbd9cdea0c87&scene=21#wechat_redirect  
