@@ -1,5 +1,8 @@
-find .|xargs touch
+tomcat项目reload 为true后，使用如下命令只更新某一个项目，实现单一项目重启，而不用重启整个tomcat  
+find .|xargs touch  
 
+https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation  
+漫画：什么是跳跃表？  
 
 https://github.com/crossoverJie/JCSprout  
     Java 核心知识库  
