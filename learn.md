@@ -1,10 +1,8 @@
 https://github.com/crossoverJie/JCSprout  
     Java 核心知识库  
 
-
 https://ifeve.com/overview/  
     Java NIO系列教程（一） Java NIO 概述   
-
 
 https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html  
     Java魔法类：Unsafe应用解析  
@@ -14,8 +12,7 @@ https://tech.meituan.com/2019/02/28/java-dynamic-trace.html
     
 https://tech.meituan.com/2019/09/05/java-bytecode-enhancement.html   
     字节码增强技术探索  
-    
-    
+        
 https://tech.meituan.com/2014/08/20/innodb-lock.html  
     Innodb中的事务隔离级别和锁的关系  
     
@@ -24,7 +21,9 @@ https://mp.weixin.qq.com/s/V1hGa6D9aGrP6PiCWEmc0w
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651960945&idx=1&sn=d08f33c5f317fee8956252da8e0236b6&chksm=bd2d03ad8a5a8abb0370b826b7384a4095a5ed36238f0911d102b0ceee8e5d2fbe3bc80c56d9&scene=21#wechat_redirect
     架构师之路17年精选80篇      
-    
+
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959830&idx=1&sn=ce1c5a58caed227d7dfdbc16d6e1cea4&chksm=bd2d07ca8a5a8edc45cc45c4787cc72cf4c8b96fb43d2840c7ccd44978036a7d39a03dd578b5&scene=21#wechat_redirect  
+    互联网架构“高并发”  
 
 https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651959942&idx=1&sn=e9d3fe111b8a1d44335f798bbb6b9eea&chksm=bd2d075a8a5a8e4cad985b847778aa83056e22931767bb835132c04571b66d5434020fd4147f&scene=21#wechat_redirect  
     业界难题-“跨库分页”的四种方案  
