@@ -1,3 +1,6 @@
+find .|xargs touch
+
+
 https://github.com/crossoverJie/JCSprout  
     Java 核心知识库  
 
