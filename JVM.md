@@ -1,5 +1,15 @@
 https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/gc01/index.html    
 	Java Garbage Collection Basics  
+	
+https://blog.csdn.net/m0_37568814/article/details/88670280  
+JVM GC日志分析  
+
+https://www.cnblogs.com/hexinwei1/p/9556259.html  
+JVM命令-java服务器故障排查  
+
+https://www.cnblogs.com/yjd_hycf_space/p/7755633.html  
+ jstat命令查看jvm的GC情况  
+
 
 https://www.cnblogs.com/aspirant/p/8662690.html    
 	JVM的垃圾回收机制 总结(垃圾收集、回收算法、垃圾回收器)
@@ -22,6 +32,9 @@ https://tech.meituan.com/2019/01/03/spring-boot-native-memory-leak.html
 
 https://www.toutiao.com/a6683710658250277380/  
 	JVM性能调优篇
+
+https://blog.csdn.net/zqz_zqz/article/details/70233767  
+java 中的锁 -- 偏向锁、轻量级锁、自旋锁、重量级锁  
 
   
 G1中几个重要概念
