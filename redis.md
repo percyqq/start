@@ -11,10 +11,14 @@ Redis 高负载下的中断优化
 https://tech.meituan.com/2018/03/16/redis-high-concurrency-optimization.html  
 
 
-
 缓存服务的更新策略有哪些？  
 https://www.jianshu.com/p/22c7e9ab5d15  
 
+https://blog.csdn.net/zhiguozhu/article/details/50517527  
+ 瞬时高并发（秒杀/活动）Redis方案
+  
+  
+  
 缓存的过期时间问题：
 设计缓存的过期时间需要非常的有技巧，且必须与业务实际情况相结合。
 因为如果设计的过期时间太短了，那会导致缓存效果不佳，
