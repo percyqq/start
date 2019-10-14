@@ -9,8 +9,9 @@ https://www.cnblogs.com/likehua/p/3999538.html
   
 https://blog.csdn.net/suifeng3051/article/details/48053965  
   Kafka 设计与原理详解  
-  
-  
+
+https://www.cnblogs.com/huxi2b/p/6223228.html  
+  Kafka消费组(consumer group)
 
 如何做到消息不丢失  
 ==
