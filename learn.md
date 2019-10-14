@@ -7,7 +7,7 @@ cat dfxmgt.log | grep configurationcenter | tail -n 100
 https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation  
 漫画：什么是跳跃表？  
 
-https://www.javadoop.com  
+https://www.javadoop.com        |       https://www.cnblogs.com/qingquanzi/p/8146638.html
     Good Blog  
     
 https://github.com/hustcc/JS-Sorting-Algorithm      
