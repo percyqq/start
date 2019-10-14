@@ -9,6 +9,9 @@ https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&u
 
 https://www.javadoop.com        |       https://www.cnblogs.com/qingquanzi/p/8146638.html  
     Good Blog  
+
+https://mp.weixin.qq.com/s?__biz=MzU0OTk3ODQ3Ng==&mid=2247483948&idx=1&sn=e75aa8b5cfae1363391801e2f74bd2ee&chksm=fba6ea2fccd163390520dbc62b6170c7f3d456207e623fce4ded036fea525a6782a31098b905&scene=21#wechat_redirect  
+    亿级流量系统架构之如何支撑百亿级数据的存储与计算      
     
 https://github.com/hustcc/JS-Sorting-Algorithm      
     一本关于排序算法的 GitBook 在线书籍 《十大经典排序算法》，多语言实现  
