@@ -1,8 +1,17 @@
 tomcat项目reload 为true后，使用如下命令只更新某一个项目，实现单一项目重启，而不用重启整个tomcat  
 find .|xargs touch  
 
+筛查日志： 某个文件的查找某个 字符的 最后100行  
+cat dfxmgt.log | grep configurationcenter | tail -n 100
+
 https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation  
 漫画：什么是跳跃表？  
+
+https://www.javadoop.com  
+    Good Blog  
+    
+https://github.com/hustcc/JS-Sorting-Algorithm      
+    一本关于排序算法的 GitBook 在线书籍 《十大经典排序算法》，多语言实现  
 
 https://github.com/crossoverJie/JCSprout  
     Java 核心知识库  
