@@ -10,6 +10,8 @@ JVM命令-java服务器故障排查
 https://www.cnblogs.com/yjd_hycf_space/p/7755633.html  
  jstat命令查看jvm的GC情况  
 
+https://www.cnblogs.com/redcreen/archive/2011/05/04/2037057.html  
+JVM系列三:JVM参数设置、分析  
 
 https://www.cnblogs.com/aspirant/p/8662690.html    
 	JVM的垃圾回收机制 总结(垃圾收集、回收算法、垃圾回收器)
