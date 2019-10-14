@@ -27,6 +27,10 @@ https://www.cnblogs.com/aspirant/p/7200523.html
 Java 类加载机制(阿里)-何时初始化类  
 
 
+https://www.jianshu.com/p/28387056eeb4  
+详解Condition的await和signal等待/通知机制   
+
+
 https://ifeve.com/overview/  
     Java NIO系列教程（一） Java NIO 概述   
 
