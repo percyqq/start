@@ -105,7 +105,6 @@ Monitor可以理解为一个同步工具或一种同步机制，通常被描述�
 synchronized通过Monitor来实现线程同步，Monitor是依赖于底层的操作系统的Mutex Lock（互斥锁）来实现的线程同步。
 
 
-
 Method area is created on virtual machine startup, shared among all Java virtual machine threads and it is logically part of heap area. It stores per-class structures such as the run-time constant pool, field and method data, and the code for methods and constructors.
 方法区在虚拟机启动的时候创建，共享给了所有虚机中的线程。在逻辑上可以认为是 Heap 区的一部分。它存储了每个class 的结构。例如：
 运行时常量池，字段和方法的数据，和 方法/构造器的代码。
