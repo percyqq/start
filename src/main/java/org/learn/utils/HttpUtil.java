@@ -1,5 +1,9 @@
-import com.alibaba.fastjson.JSONObject;
+package org.learn.utils;
 
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -45,20 +49,6 @@ import javax.net.ssl.X509TrustManager;
 public class HttpUtil {
 
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            
-            
-            
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
     private static CloseableHttpClient httpClient;
@@ -68,7 +58,8 @@ public class HttpUtil {
 
     static {
         try {
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                @Override
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
                 }
@@ -84,37 +75,37 @@ public class HttpUtil {
 
             SSLContext sl = SSLContext.getInstance("TLSv1.2");
             sl.init(null, trustAllCerts, new java.security.SecureRandom());
-            HostnameVerifier f = (String s, SSLSession l) -> {
-                return true;
-            };
+            HostnameVerifier f = (String s, SSLSession l) -> true;
             SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sl, f);
 
             // 配置同时支持 HTTP 和 HTPPS
-            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", sslsf)
-                .build();
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                    .register("https", sslsf)
+                    .build();
 
             poolConnManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-            poolConnManager.setMaxTotal(15);// 默认的是20
-            poolConnManager.setDefaultMaxPerRoute(3); // 设置最大路由
+            // 默认的是20
+            poolConnManager.setMaxTotal(15);
+            // 设置最大路由
+            poolConnManager.setDefaultMaxPerRoute(3);
 
             RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(15000) // 设置连接超时时间，单位毫秒。
-                .setConnectionRequestTimeout(10000) // 设置从connectManager获取Connection超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的。
-                .setSocketTimeout(15000)
-                .build(); // 请求获取数据的超时时间，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
+                    .setConnectTimeout(15000) // 设置连接超时时间，单位毫秒。
+                    .setConnectionRequestTimeout(10000) // 设置从connectManager获取Connection超时时间，单位毫秒。这个属性是新加的属性，因为目前版本是可以共享连接池的。
+                    .setSocketTimeout(15000)
+                    .build(); // 请求获取数据的超时时间，单位毫秒。 如果访问一个接口，多少时间内无法返回数据，就直接放弃此次调用。
 
             // 初始化httpClient
             httpClient = HttpClients.custom()
-                // 设置连接池管理
-                .setConnectionManager(poolConnManager)
-                // 设置请求配置
-                .setDefaultRequestConfig(requestConfig)
-                // 设置重试次数
-                .setRetryHandler(new DefaultHttpRequestRetryHandler(0, false))
-                .setConnectionTimeToLive(30, TimeUnit.SECONDS)
-                .build();
+                    // 设置连接池管理
+                    .setConnectionManager(poolConnManager)
+                    // 设置请求配置
+                    .setDefaultRequestConfig(requestConfig)
+                    // 设置重试次数
+                    .setRetryHandler(new DefaultHttpRequestRetryHandler(0, false))
+                    .setConnectionTimeToLive(30, TimeUnit.SECONDS)
+                    .build();
 
             if (poolConnManager != null && poolConnManager.getTotalStats() != null) {
                 logger.info("now client pool {}", poolConnManager.getTotalStats().toString());
@@ -229,7 +220,7 @@ public class HttpUtil {
     }
 
     public static String accessWithIgnoreCert(String url, String method, List<BasicNameValuePair> headers,
-        List<BasicNameValuePair> parameters) {
+                                              List<BasicNameValuePair> parameters) {
         method = method.toUpperCase();
         try {
             String result = execRequest(url, method, headers, parameters, httpClient);
@@ -241,8 +232,8 @@ public class HttpUtil {
     }
 
     private static String execRequest(String url, String method, List<BasicNameValuePair> headers,
-        List<BasicNameValuePair> parameters, CloseableHttpClient httpClient)
-        throws ClientProtocolException, IOException {
+                                      List<BasicNameValuePair> parameters, CloseableHttpClient httpClient)
+            throws ClientProtocolException, IOException {
 
         HttpRequestBase httpRequest = null;
         CloseableHttpResponse response = null;
@@ -270,7 +261,7 @@ public class HttpUtil {
     }
 
     private static HttpRequestBase getRequest(String url, String type, List<BasicNameValuePair> headers,
-        List<BasicNameValuePair> parameters) throws UnsupportedEncodingException {
+                                              List<BasicNameValuePair> parameters) throws UnsupportedEncodingException {
         HttpRequestBase httpRequest;
         switch (type) {
             case "PUT":
@@ -300,18 +291,18 @@ public class HttpUtil {
     }
 
     private static HttpRequestBase deleteRequest(String url, List<BasicNameValuePair> parameters,
-        List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
+                                                 List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
         return new HttpDelete(httpGetOrDelParams(url, parameters).toString());
     }
 
     private static HttpRequestBase getGetRequest(String url, List<BasicNameValuePair> parameters,
-        List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
+                                                 List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
         StringBuffer sb = httpGetOrDelParams(url, parameters);
         return new HttpGet(sb.toString());
     }
 
     private static StringBuffer httpGetOrDelParams(String url, List<BasicNameValuePair> parameters)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
 
         StringBuffer sb = new StringBuffer("");
         sb.append(url);
@@ -336,7 +327,7 @@ public class HttpUtil {
     }
 
     private static HttpRequestBase postRequest(String url, List<BasicNameValuePair> parameters,
-        List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
+                                               List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
         HttpPost httpPost = new HttpPost(url);
         HttpRequestBase httpRequest = httpPost;
         if (null == parameters) {
@@ -348,7 +339,7 @@ public class HttpUtil {
     }
 
     private static HttpRequestBase putRequest(String url, List<BasicNameValuePair> parameters,
-        List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
+                                              List<BasicNameValuePair> headers) throws UnsupportedEncodingException {
         HttpPut httpPut = new HttpPut(url);
         HttpRequestBase httpRequest = httpPut;
         if (null == parameters) {
@@ -360,7 +351,7 @@ public class HttpUtil {
     }
 
     private static StringEntity assemblyParams(List<BasicNameValuePair> parameters, List<BasicNameValuePair> headers)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         StringEntity entity;
         int type = 0;
         for (BasicNameValuePair head : headers) {
@@ -380,14 +371,15 @@ public class HttpUtil {
     }
 
     private static StringEntity assemblyParamsForType(List<BasicNameValuePair> parameters, int type)
-        throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         StringEntity entity;
         if (type == 1) {
-            JSONObject json = new JSONObject();
+            JsonElement jsonElement = JsonParser.parseString("{}");
+            JsonObject json = jsonElement.getAsJsonObject();
             for (BasicNameValuePair param : parameters) {
-                json.put(param.getName(), param.getValue());
+                json.addProperty(param.getName(), param.getValue());
             }
-            entity = new StringEntity(json.toJSONString());
+            entity = new StringEntity(jsonElement.toString());
         } else if (type == 2) {
             String boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
             StringBuffer sb = new StringBuffer();
@@ -426,7 +418,7 @@ public class HttpUtil {
     }
 
     private static List<BasicNameValuePair> encodeList(List<BasicNameValuePair> objList) {
-        List<BasicNameValuePair> list = new ArrayList<BasicNameValuePair>();
+        List<BasicNameValuePair> list = new ArrayList<>();
         for (BasicNameValuePair obj : objList) {
             list.add(obj);
         }
