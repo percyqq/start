@@ -27,7 +27,7 @@ info:
 # MyBatis
 mybatis:
   mapper-locations: classpath*:mapper/generator/*Mapper.xml,classpath*:mapper/*Mapper.xml
-  type-aliases-package: com.keruyun.scm.wms.dao.**.entity
+  type-aliases-package: com.xx.dao.**.entity
   configuration:
     map-underscore-to-camel-case: true
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -142,7 +142,7 @@ spring:
           table-strategy:
             standard:
               sharding-column: brand_id
-              precise-algorithm-class-name: com.keruyun.scm.wms.app.config.sharding.CcTaskShardingAlgorithm
+              precise-algorithm-class-name: com.xx.config.sharding.CcTaskShardingAlgorithm
         scm_cc_task_detail:
           actual-data-nodes: ds_ms_sharding.scm_cc_task_detail_$->{0..31}
 #          key-generator:
@@ -151,4 +151,4 @@ spring:
           table-strategy:
             standard:
               sharding-column: brand_id
-              precise-algorithm-class-name: com.keruyun.scm.wms.app.config.sharding.CcTaskShardingAlgorithm
+              precise-algorithm-class-name: com.xx.config.sharding.CcTaskShardingAlgorithm
