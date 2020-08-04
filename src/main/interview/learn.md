@@ -4,7 +4,7 @@ find .|xargs touch
 筛查日志： 某个文件的查找某个 字符的 最后100行  
 cat dfxmgt.log | grep configurationcenter | tail -n 100
 
-https://www.jianshu.com/p/ac351674d8eb?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation  
+https://www.jianshu.com/p/dc252b5efca6
 漫画：什么是跳跃表？  
 
 https://www.javadoop.com        |       https://www.cnblogs.com/qingquanzi/p/8146638.html  

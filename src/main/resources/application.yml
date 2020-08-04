@@ -1,0 +1,15 @@
+server:
+  port: 3603
+  servlet:
+    context-path: /start
+    contextPath: /start1
+
+#### log4j ####
+logging:
+  #config: classpath:log4j2.xml
+  level:
+    org.learn: DEBUG
+
+
+
+

@@ -1,0 +1,154 @@
+server:
+  port: 36603
+  servlet:
+    context-path: /scm-wms
+
+#### log4j ####
+logging:
+  config: classpath:log4j2.xml
+  level:
+    org.learn: DEBUG
+
+eureka:
+  client:
+    enabled: false
+    registerWithEureka: false   #false 表示不向注册中心中注册自己
+    fetch-registry: false
+    fetchRegistry: false
+    registryFetchIntervalSeconds : 30
+  instance:
+    hostname: local002   #eureka 服务端实例名称
+
+
+info:
+  Author: supply
+  Description: this is scmo wms service
+
+# MyBatis
+mybatis:
+  mapper-locations: classpath*:mapper/generator/*Mapper.xml,classpath*:mapper/*Mapper.xml
+  type-aliases-package: com.keruyun.scm.wms.dao.**.entity
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+spring:
+  kafka:
+    producer:
+      key-serializer:
+      value-serializer:
+      batch-size:
+      retries:
+  mvc:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+  jackson:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    time-zone: 'GMT+8'
+    converters:
+      preferred-json-mapper: gson
+
+  ### 毛利报表kafka（big-data）###
+  cost.kafka:
+    bootstrap-servers: test.bdkafka01.com:9092,test.bdkafka02.cnhz.com:9092,test.bdkafka03.cn.com:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer 
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    topic:
+      kafka-queue-sku-bill-topic: sku-bill-increase-decrease
+
+  ## 分表配置
+  shardingsphere:
+    props:
+      sql:
+        show: true
+      check:
+        table:
+          metadata:
+            enabled: false
+      max:
+        connections:
+          size:
+            per:
+              query: 20
+    datasource:
+      names: master,slave
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        connectionTestQuery: SELECT 1
+        connectionTimeout: 30000
+        idleTimeout: 30000
+        maxLifetime: 1800000
+        maximumPoolSize: 100
+        minimumIdle: 5
+        poolName: scm-wms-sharding-master
+        driverClass: ${jdbc.multi.master.driverClassName}
+        jdbcUrl:  ${jdbc.multi.master.url}
+        username: ${jdbc.multi.master.username}
+        password: ${jdbc.multi.master.password}
+        maxActive: ${jdbc.multi.master.druid.maxActive}
+        minIdle: ${jdbc.multi.master.druid.minIdle}
+        initialSize: ${jdbc.multi.master.druid.initialSize}
+        maxPoolPreparedStatementPerConnectionSize: ${jdbc.multi.master.druid.maxPoolPreparedStatementPerConnectionSize}
+        maxWait:  ${jdbc.multi.master.druid.maxWait}
+        minEvictableIdleTimeMillis: ${jdbc.multi.master.druid.minEvictableIdleTimeMillis}
+        poolPreparedStatements: true
+        testOnBorrow: true
+        testOnReturn: false
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: ${jdbc.multi.master.druid.timeBetweenEvictionRunsMillis}
+        validationQuery: 'select 1'
+        validationQueryTimeout: ${jdbc.multi.master.druid.validationQueryTimeout}
+      slave:
+        type: com.zaxxer.hikari.HikariDataSource
+        connectionTestQuery: SELECT 1
+        connectionTimeout: 30000
+        idleTimeout: 30000
+        maxLifetime: 1800000
+        maximumPoolSize: 100
+        minimumIdle: 5
+        poolName: scm-wms-sharding-slave
+        driverClass: ${jdbc.multi.slave.driverClassName}
+        jdbcUrl:  ${jdbc.multi.slave.url}
+        username: ${jdbc.multi.slave.username}
+        password: ${jdbc.multi.slave.password}
+        maxActive: ${jdbc.multi.slave.druid.maxActive}
+        minIdle: ${jdbc.multi.slave.druid.minIdle}
+        initialSize: ${jdbc.multi.slave.druid.initialSize}
+        maxPoolPreparedStatementPerConnectionSize: ${jdbc.multi.slave.druid.maxPoolPreparedStatementPerConnectionSize}
+        maxWait: ${jdbc.multi.slave.druid.maxWait}
+        minEvictableIdleTimeMillis: ${jdbc.multi.slave.druid.minEvictableIdleTimeMillis}
+        poolPreparedStatements: true
+        testOnBorrow: true
+        testOnReturn: false
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: ${jdbc.multi.slave.druid.timeBetweenEvictionRunsMillis}
+        validationQuery: 'select 1'
+        validationQueryTimeout: ${jdbc.multi.slave.druid.validationQueryTimeout}
+    #    masterslave:
+    #      name: ds_ms_default
+    #      master-data-source-name:  master
+    #      slave-data-source-names: slave
+    sharding:
+      master-slave-rules:
+        ds_ms_sharding:
+          master-data-source-name: master
+          slave-data-source-names: slave
+      #      default-dataSource-name: ds_ms_default
+      tables:
+        scm_cc_task:
+          actual-data-nodes: ds_ms_sharding.scm_cc_task_$->{0..7}
+#          key-generator:
+#            column: brand_id
+#            type: SNOWFLAKE
+          table-strategy:
+            standard:
+              sharding-column: brand_id
+              precise-algorithm-class-name: com.keruyun.scm.wms.app.config.sharding.CcTaskShardingAlgorithm
+        scm_cc_task_detail:
+          actual-data-nodes: ds_ms_sharding.scm_cc_task_detail_$->{0..31}
+#          key-generator:
+#            column: brand_id
+#            type: SNOWFLAKE
+          table-strategy:
+            standard:
+              sharding-column: brand_id
+              precise-algorithm-class-name: com.keruyun.scm.wms.app.config.sharding.CcTaskShardingAlgorithm

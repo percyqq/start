@@ -25,7 +25,7 @@ public class JedisClient {
 
     private static final Logger logger = LoggerFactory.getLogger(JedisClient.class);
 
-    @Resource
+    //@Resource
     public JedisPool jedisPool;
 
     /**
@@ -50,7 +50,7 @@ public class JedisClient {
      *
      * @param object
      * @return
-     * @author tany@shishike.com
+     * @author
      * @2015年3月9日
      */
     public static byte[] serialize(Object object) {
@@ -84,7 +84,7 @@ public class JedisClient {
      *
      * @param bytes
      * @return
-     * @author tany@shishike.com
+     * @author
      * @2015年3月9日
      */
     public static Object deserialize(byte[] bytes) {
@@ -220,7 +220,7 @@ public class JedisClient {
      * 模糊删除
      *
      * @param regex
-     * @author tany@shishike.com
+     * @author
      * @2015年3月9日
      */
     public void fuzzyDel(String regex) {
@@ -246,7 +246,7 @@ public class JedisClient {
      * @param key
      * @param value
      * @param expireTime
-     * @author tany@shishike.com
+     * @author
      * @2015年3月9日
      */
     public void hmset(String key, Map<String, String> value, int expireTime) {
@@ -294,7 +294,7 @@ public class JedisClient {
      *
      * @param regex
      * @return
-     * @author tany@shishike.com
+     * @author
      * @2015年3月9日
      */
     public List<String> fuzzyGet(String regex) {
