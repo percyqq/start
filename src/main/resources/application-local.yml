@@ -1,0 +1,135 @@
+# datasource config
+spring.dynamicds.databases:
+- name: xxx
+  datasources:
+  - name: master
+    url: jdbc:mysql://dev.rdsmaster.xxx.com:3306/xxx_dev?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    username: dev_xxx
+    password: xzmupRZuzKg18rf
+    driver-class-name: com.mysql.jdbc.Driver
+  - name: slave
+    url: jdbc:mysql://dev.rdsmaster.xxx.com:3306/xxx_dev?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    username: dev_xxx
+    password: xzmupRZuzKg18rf
+    driver-class-name: com.mysql.jdbc.Driver
+- name: xxx
+  datasources:
+  - name: master
+    url: jdbc:mysql://dev.rdsmaster.xxx.com:3306/uni_id_dev?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    username: dev_uni_id
+    password: xxx
+    driver-class-name: com.mysql.jdbc.Driver
+  - name: slave
+    url: =jdbc:mysql://dev.rdsmaster.xxx.com:3306/uni_id_dev?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    username: dev_uni_id
+    password: xxxx
+    driver-class-name: com.mysql.jdbc.Driver
+
+ods.mongodb.enabled: true
+ods.mongodb.mapping: com.xxx.xxx.core.meritpay.commission.compute.entity
+ods.mongodb.uri: mongodb://ods_readonly:Bc%601!%4031%40%23%24A@172.16.30.39:27017/ods
+
+wide.mongodb.enabled: true
+wide.mongodb.uri: mongodb://rept_readonly:jkfg%23%24%2512@172.16.30.39:27017/bd_rept
+
+mind.mongodb.enabled: true
+mind.mongodb.uri: mongodb://mg_qa_xxx_mind:FDq4UZ9DdK7A6zUIXQQW@dds-bp1c359e21a920441.mongodb.rds.aliyuncs.com:3717/xxx_mind_test
+
+spring.data.mongodb.uri: mongodb://dev_labor:KPmaqdeVs9x7QWtcXHyq@dev.mongodb1.xxx.com:3717,dev.mongodb2.xxx.com:3717/labor_dev
+
+
+
+# kafka config
+intime.kafka.bootstrap-servers: 172.16.30.13:9092,172.16.30.135:9092,172.16.30.136:9092
+intime.kafka.consumer.max-poll-records: 1
+intime.kafka.consumer.auto-offset-reset: earliest
+intime.kafka.consumer.heartbeat-interval: 5000
+intime.kafka.consumer.enable-auto-commit: true
+intime.kafka.listener.poll-timeout: 10000
+intime.kafka.listener.concurrency: 1
+intime.kafka.session-timeout: 200100
+intime.kafka.request-timeout: 200200
+intime.kafka.group-id: xxx_meritpay
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
+      exclude: static/**,public/**,thymeleaf/**,xlsx/**
+  # 这里是 商品同步相关的配置。
+  kafka:
+    producer:
+      key-serializer:
+      value-serializer:
+      batch-size:
+      retries:
+    consumer:
+      auto-commit-interval: 100
+      auto-offset-reset: latest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 10
+
+
+intime.kafka.revote-group-id: dev_tal_svc_revote_group
+intime.kafka.revote-topic: dev_loyalty_store_cancel
+
+intime.kafka.compute.notice.producer:
+        bootstrapServers: 172.16.30.13:9092,172.16.30.135:9092,172.16.30.136:9092
+        retries: 3
+        batchSize: 4096
+        linger: 5
+        bufferMemory: 40960
+        topic: dev_xxx_compute_complete_notice
+
+intime.kafka.compute:
+    group-id: dev_group_xxx_meritpay_compute
+    topic: dev_xxx_compute_complete_notice
+
+# redis config
+intime.redis.database: 77
+intime.redis.host: dev.redis.xxx.com
+intime.redis.password: d64ffed6b62e4e7c:CcPEtGSkIXSESQ6R
+intime.redis.port: 6379
+intime.redis.timeout: 1800
+intime.redis.pool.max-active: 3
+intime.redis.pool.max-wait: 20000
+intime.redis.pool.maxIdle: 100
+intime.redis.pool.min-idle: 1
+spring.redis.cache.defaultExpiration: 600
+
+
+# b-ui
+kry.cloud.bui.auth.rest-passwd.url: http://devb.xxx.com/mind/auth/userBrand/toFirstModifyPassword
+kry.cloud.bui.xxx.index.url: http://devb.xxx.com/xxx/
+
+kry.auth.app-id: yI05Ty8RRhGfcTmDbOQeDw
+kry.auth.app-key: 9f5f1e4f03494641be3204d761ac012e
+kry.auth.app-response-key: faa555fb0d314b2f86bc892365284e41
+kry.auth.domain: http://devpsauth.xxx.com/authority
+kry.auth.erp-check-uri: http://deverp.xxx.com/api/mobile/getBrandAuthVersion
+
+# 使用devid生成
+env.active: dev
+
+gateway.appKey: 3C845DDAD5452BD0E79D5CFD05CF691A
+gateway.deviceId: xxx
+gateway.domain: http://devpartner.xxx.com
+gateway.platform: xxx
+gateway.vender: 9999
+gateway.version: 1.0.0.1
+
+spring.web.side:
+  webext:
+    ignoreWrapperPaths: "/info,/metrics,/health,/swagger-resources/**,/v2/api-docs/**"
+    enabledJsonLongToString: true
+
+
+intime.task.bonus.corePoolSize: 5
+intime.task.bonus.maximumPoolSize: 20
+intime.task.bonus.keepAliveTime: 3600
+intime.task.bonus.queueSize: 100
+

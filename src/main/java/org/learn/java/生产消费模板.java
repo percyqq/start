@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.learn.utils.CollectionUtils;
 import org.springframework.core.task.AsyncTaskExecutor;
 
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,6 +32,7 @@ public abstract class 生产消费模板<D> {
         this.taskExecutor = taskExecutor;
         this.queue = new LinkedBlockingQueue<>(capacity);
     }
+    HashMap m;
 
     protected abstract D produced();
 

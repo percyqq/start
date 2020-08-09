@@ -17,6 +17,7 @@ FIN-WAIT-1（终止等待1）状态
                                 CLOSE-WAIT（关闭等待）状态
 3.FIN-WAIT-2（终止等待2）状态
 
+不使用线程池，客户端请求导致服务器，time_close状态，
 
 
 https://www.cnblogs.com/bj-mr-li/p/11106390.html
