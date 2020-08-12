@@ -4,6 +4,10 @@
 2 消费速度过快 qps: 1.3k
 3 spring kafka client 1.3.x之前不支持@KafkaListener 单独配置group-id，服务上线版本刚好使用了1.3.x之前版本
 
+Kafka索引设计有什么亮点？
+    https://www.jianshu.com/p/5f39ad4a710d
+    
+    
 1.3 如何解决
 1 将kafka消费的group id 换回到原来的group id（升级spring kafka 版本到1.3.0并反复测试group id是否是之前已用的），
     让服务消费当前最近offset，避免全量拉取数据

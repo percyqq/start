@@ -4,6 +4,9 @@
 
 JVM 回收线程的个数
 
+查看安装的java路径：
+/usr/libexec/java_home -V
+
 
 -Xmx3550m：设置JVM最大堆内存为3550M。
 -Xms3550m：设置JVM初始堆内存为3550M。此值可以设置与-Xmx相同，以避免每次垃圾回收完成后JVM重新分配内存。
