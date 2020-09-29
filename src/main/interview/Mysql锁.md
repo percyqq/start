@@ -38,12 +38,109 @@ https://segmentfault.com/a/1190000012650596
 RR 下的Read view 举例
 从上到下为时间线
 
+ps -ef|grep mysql 
+cd /                                        QQ900512
+./usr/local/mysql/bin/mysql -u root -p      
+use learn;
+
+--> INSERT INTO `learn`.`dog` (`name`) VALUES ('柯基'); 
+    UPDATE `learn`.`dog` SET `name` = '柯基135' WHERE (`id` = '18');
+
+设置事务级别  mysql8的语法：      ==> mysql 5.7的语法： set tx_isolation='repeatable-read'; 
+[ SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;           
+  SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+  select @@global.transaction_isolation,@@transaction_isolation;     ]
+
 注意先设置 session[一][二]    set autocommit=0;
 select @@autocommit;
 
+
+
+===>>>>>>> [注意 update 语句是当前读！！！， 他可以读取到当前事务下的select，读取不到的事务！看第4个场景]
+RC是语句级多版本(事务的多条只读语句，创建不同的ReadView，代价更高)，RR是事务级多版本(一个ReadView)；
+对于RC隔离就简单多了：
+With READ COMMITTED isolation level, each consistent read within a transaction sets and reads its own fresh snapshot.
+事务中每一次读取都是以当前的时间点作为判断是否提交的实际点，也即是 reads its own fresh snapshot.
+
+
+[RR级别下的事务解析！]
+====>  [1. RR隔离级别下的一致性读，不是以begin开始的时间点作为snapshot建立时间点，而是以第一条select语句的时间点作为snapshot建立的时间点。]
+[sesseion A]                                                [session B]
+①： mysql> set tx_isolation='repeatable-read';              mysql> set tx_isolation='repeatable-read';
+    Query OK, 0 rows affected (0.00 sec)                    Query OK, 0 rows affected (0.00 sec)
+ 
+②： mysql> begin;
+    Query OK, 0 rows affected (0.01 sec)
+③：                                                         mysql> select * from t1;
+                                                            Empty set (0.00 sec)
+                                                            mysql> insert into t1(c1,c2) values(1,1);
+                                                            Query OK, 1 row affected (0.01 sec)
+④： mysql> select * from t1;
+    +----+------+
+    | c1 | c2   |
+    +----+------+
+    |  1 |    1 |
+    +----+------+
+    1 row in set (0.00 sec)
+........................................................................................................................
+ 
+=====> [2. RR隔离级别下的一致性读，是以第一条select语句的执行点作为snapshot建立的时间点的，即使是不同表的select语句。
+    这里因为session A在insert之前对 t 表执行了select，所以建立了snapshot，所以后面的select * from t1 不能读取到insert的插入的值。]
+[sesseion A]                                                [session B]
+①：mysql> set tx_isolation='repeatable-read';               mysql> set tx_isolation='repeatable-read';
+                                                            mysql> select * from t1;
+                                                            Empty set (0.00 sec)
+②：mysql> begin;
+   mysql> select * from t;
+③：                                                         mysql> insert into t1(c1,c2) values(1,1);
+                                                            Query OK, 1 row affected (0.01 sec)
+④：mysql> select * from t1;
+   Empty set (0.00 sec) 	
+........................................................................................................................
+
+=====> [3. session A 的第一条语句，发生在session B的 insert语句提交之前，所以session A中的第二条select还是不能读取到数据。
+    因为RR中的一致性读是以事务中第一个select语句执行的时间点作为snapshot建立的时间点的。而此时，session B的insert语句还没有执行，所以读取不到数据。]
+[sesseion A]                                                [session B]
+①：mysql> set tx_isolation='repeatable-read';                mysql> set tx_isolation='repeatable-read';
+                                                             mysql> select * from t1;
+                                                             Empty set (0.00 sec)
+②：mysql> begin;
+③：mysql> select * from t1;                                  mysql> select * from t1;
+   Empty set (0.00 sec)                                      Empty set (0.00 sec)
+                                                             mysql> insert into t1(c1,c2) values(1,1);   
+④：mysql> select * from t1;
+   Empty set (0.01 sec)
+........................................................................................................................
+
+=====> [4. 本事务中进行修改的数据，即使没有提交，在本事务中的后面也可以读取到。
+            update 语句因为进行的是“当前读”，所以它可以修改成功。]
+[sesseion A]                                                [session B]
+①：mysql> set tx_isolation='repeatable-read';                mysql> set tx_isolation='repeatable-read';
+                                                             mysql> select * from t1;
+                                                             Empty set (0.00 sec)
+②：mysql> begin;     事务需要开始！
+   mysql> select * from t1;                                  
+   Empty set (0.00 sec) 
+③：                                                          mysql> INSERT INTO `learn`.`dog` (`name`) VALUES ('柯基X!'); 
+                                                             mysql> select * from t1;
+                                                                    ==>  可以查询出   柯基X!
+④：mysql> select * from t1;                                  
+    Empty set (0.00 sec)                                                                     
+⑤：UPDATE `dog` SET `name`='柯基135' WHERE `name`= '柯基X!' ;
+   Query OK, 1 row affected (0.00 sec)
+   [Rows matched: 1  Changed: 1  Warnings: 0]
+    就是这么屌，select读取不到的，我update就读得到！
+........................................................................................................................
+                                                                    
+
+还是印证了那句话，select是当前读，
+    所以 [一] 因为读的太早，啥都读不到， [三]的数据已经提交了！
+        [二] 因为读的晚，啥读读得到！！
+          
+https://github.com/zhangyachen/zhangyachen.github.io/issues/68
   [一]                                       [二]                                       [三]
-①begin                                      
-②                                           begin   
+① [begin;]                                      
+②                                           [begin;]   
 ③[ INSERT INTO dog(name) VALUES('二哈');     
     假设此时事务号21]                           
 ④                                           [ INSERT INTO dog(name) VALUES('柯基');     
@@ -51,6 +148,7 @@ select @@autocommit;
 ⑤[SELECT * FROM learn.brand;
 此时创建读视图，up_limit_id = 21， 
 low_limit_id = 23 活跃事务列表为(21,22)]
+    ==>  只 看得到  '二哈'
 ⑥                                                                                    [ INSERT INTO dog(name) VALUES('柴柴');     
                                                                                         假设此时事务号23]
 ⑦                                                                                    [ INSERT INTO dog(name) VALUES('边牧');     
@@ -58,17 +156,37 @@ low_limit_id = 23 活跃事务列表为(21,22)]
 ⑧                                                                                    [ INSERT INTO dog(name) VALUES('金毛');     
                                                                                         假设此时事务号25]  
 ⑨                                                                                     select * from test; 
-                                                                            此时的up_limit_id 为21，low_limit_id 为26，
-                                                                            活跃事务列表为（21,22），故21，22在活跃事务列表不可见   
-⑩                                          select * from test; 此时low_limit_id为26，up_limit_id 为21，
-                                            活跃事务列表是(21,22) 22本事务自身可见。21的在活跃事务列表不可见。
+                                                                                    此时的up_limit_id 为21，low_limit_id 为26，
+                                                                                    活跃事务列表为（21,22），故21，22在活跃事务列表不可见   
+⑩                                          select * from test; 
+                                            [==> '柯基' '柴柴' '边牧' '金毛' 都看得到！]
+                                            此时low_limit_id为26，up_limit_id 为21，
+                                            活跃事务列表是(21,22) 22本事务自身可见。
+                                            21的在活跃事务列表不可见。
                                             23,24不在活跃事务列表，可见                                   
-11 select * from test;  事务内readview不变，
+11 select * from test;  
+    [只 看得到  '二哈']
+    事务内readview不变，
     low_limit_id = 23，up_limit_id = 21，
     活跃事务列表 （21,22）。 
     故21自身可见，22在活跃事务列表不可见。
     >=23的都不可见                                                                                        
-                                                                                        
+    [有趣的事：产生 被锁！，无法更新...  ===> 间隙锁？
+        被锁失败！ ： UPDATE `learn`.`dog` SET `name` = '柯基135' WHERE `name` = '边牧';
+        更新成功！ ： UPDATE `learn`.`dog` SET `name` = '柯基135' WHERE `id` = xxx   
+    ]                                                                       xxx 即是：[三]中的id。。           
+
+RR级别下会出现：
+库存死锁的场景，那张图 update scm_dispatch_org_inventory set qty=?, lock_qty=? where id=? and [server_update_time=?]
+这也就解释了死锁的场景：server_update_time是范围，不像id那样精准。不过如果是趋势递增的id，也会死锁。
+1. 事务1 begin， 
+        2. 事务2 begin， 
+3. 事务1 insert 
+        4. 事务2 insert
+5. 事务1 select       
+        6. 事务3 begin， insert  commit！
+        7. 事务2 select
+8. 事务1  去update
 
 
 INSERT INTO learn.brand(id,name,status,createTime) VALUES ('2', '102度健康火锅', '0', '2013-08-02 15:06:17');
