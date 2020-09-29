@@ -1,4 +1,87 @@
 
+https://segmentfault.com/a/1190000012650596
+1.⼀个事务快照的创建过程可以概括为：
+  a.查看当前所有的未提交并活跃的事务，存储在数组中
+  b.选取未提交并活跃的事务中最⼩的XID，记录在快照的xmin中
+  c.[选取所有已提交事务中最⼤的XID，加1后记录在xmax中]
+2.read view 主要是⽤来做可⻅性判断的, ⽐较普遍的解释便是"本事务不可⻅的当前其他活跃事务", 但正是该解释, 可能会造成⼀节理解上的误区, 
+    所以此处提供两个参考, 供给⼤家避开理解误区:
+        read view中的`⾼⽔位low_limit_id`可以参考
+        https://github.com/zhangyachen/zhangyachen.github.io/issues/68
+        https://www.zhihu.com/question/66320138
+            其实第1点中加粗部分也是相关⾼⽔位的介绍( 注意进⾏了+1 )
+3.另外, 对于read view快照的⽣成时机, 也⾮常关键, 正是因为⽣成时机的不同, 造成了RC,RR两种隔离级别的不同可⻅性;
+    ==>在innodb中(默认repeatable read级别), 事务在begin/start transaction之后的[第⼀条select读操作后], 
+        会创建⼀个快照(read view), 将当前系统中活跃的其他事务记录记录起来;
+    ==>在innodb中(默认repeatable committed级别), 事务中每条select语句都会创建⼀个快照(read view);
+参考:https://www.cnblogs.com/digdeep/p/4947694.html
+[
+    With REPEATABLE READ isolation level, the snapshot is based on the time when the
+        first read operation is performed.
+    使⽤REPEATABLE READ隔离级别，快照是基于执⾏第⼀个读操作的时间。
+    --------------------------------------------------------------------------------
+    With READ COMMITTED isolation level, the snapshot is reset to the time of each
+        consistent read operation.
+    使⽤READ COMMITTED隔离级别，快照被重置为每个⼀致的读取操作的时间。
+]
+
+最早的事务id： up_limit_id， 最迟的事务id ： low_limit_id
+关于low_limit_id，up_limit_id的理解：
+[up_limit_id]：[它不是“当前系统的最大活动id”，而应该是当前系统尚未分配的下一个事务id，也就是目前已出现过的事务id的最大值+1。]
+    当前已经提交的事务号 + 1，事务号 < up_limit_id ，对于当前Read View都是可见的。
+    理解起来就是创建Read View视图的时候，之前已经提交的事务对于该事务肯定是可见的。
+    
+    
+[low_limit_id]：当前最大的事务号 + 1，事务号 >= low_limit_id，对于当前Read View都是不可见的。
+    理解起来就是在创建Read View视图之后创建的事务对于该事务肯定是不可见的。
+    
+RR 下的Read view 举例
+从上到下为时间线
+
+注意先设置 session[一][二]    set autocommit=0;
+select @@autocommit;
+
+  [一]                                       [二]                                       [三]
+①begin                                      
+②                                           begin   
+③[ INSERT INTO dog(name) VALUES('二哈');     
+    假设此时事务号21]                           
+④                                           [ INSERT INTO dog(name) VALUES('柯基');     
+                                             假设此时事务号22]  
+⑤[SELECT * FROM learn.brand;
+此时创建读视图，up_limit_id = 21， 
+low_limit_id = 23 活跃事务列表为(21,22)]
+⑥                                                                                    [ INSERT INTO dog(name) VALUES('柴柴');     
+                                                                                        假设此时事务号23]
+⑦                                                                                    [ INSERT INTO dog(name) VALUES('边牧');     
+                                                                                        假设此时事务号24]
+⑧                                                                                    [ INSERT INTO dog(name) VALUES('金毛');     
+                                                                                        假设此时事务号25]  
+⑨                                                                                     select * from test; 
+                                                                            此时的up_limit_id 为21，low_limit_id 为26，
+                                                                            活跃事务列表为（21,22），故21，22在活跃事务列表不可见   
+⑩                                          select * from test; 此时low_limit_id为26，up_limit_id 为21，
+                                            活跃事务列表是(21,22) 22本事务自身可见。21的在活跃事务列表不可见。
+                                            23,24不在活跃事务列表，可见                                   
+11 select * from test;  事务内readview不变，
+    low_limit_id = 23，up_limit_id = 21，
+    活跃事务列表 （21,22）。 
+    故21自身可见，22在活跃事务列表不可见。
+    >=23的都不可见                                                                                        
+                                                                                        
+
+
+INSERT INTO learn.brand(id,name,status,createTime) VALUES ('2', '102度健康火锅', '0', '2013-08-02 15:06:17');
+INSERT INTO learn.brand(id,name,status,createTime) VALUES ('3', '1920 Restaurant and Bar', '0', '2016-05-17 10:32:06');
+INSERT INTO learn.brand(id,name,status,createTime) VALUES ('4', '2108 Restaurant&Bar', '0', '2016-05-17 10:32:06');
+
+
+
+
+
+
+
+
 https://www.jianshu.com/p/d75fcdeb07a3
 
 #不同隔离级别带来的数据操作问题：

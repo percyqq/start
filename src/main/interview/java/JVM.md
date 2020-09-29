@@ -7,6 +7,14 @@ JVM 回收线程的个数
 查看安装的java路径：
 /usr/libexec/java_home -V
 
+wms项目的参考
+-server -Xms4096M -Xmx6144M -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M -Xss256k -XX:MaxTenuringThreshold=15 
+    -Xnoclassgc -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection 
+    -XX:CMSInitiatingOccupancyFraction=65 -XX:+UseCMSInitiatingOccupancyOnly -XX:+ExplicitGCInvokesConcurrent 
+    -XX:CMSFullGCsBeforeCompaction=0 -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC 
+    -Xloggc:logs/JVMGC.log -XX:+CMSClassUnloadingEnabled 
+    -Djava.awt.headless=true -Duser.timezone=GMT+08 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
+
 
 -Xmx3550m：设置JVM最大堆内存为3550M。
 -Xms3550m：设置JVM初始堆内存为3550M。此值可以设置与-Xmx相同，以避免每次垃圾回收完成后JVM重新分配内存。
@@ -57,6 +65,7 @@ JVM 回收线程的个数
     看似很均衡，但每台机的硬件不通，健康状况不同，我们还可以基于每台机接受的请求数，或响应时间等，来调整我们的负载均衡算法。
 
 
+[VarHandle 在jdk9开始替代料Unsafe]
 
 Unsafe的使用地方
 1、数组  ==> 返回数组元素内存大小，数组首元素便宜地址
