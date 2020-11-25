@@ -5,6 +5,12 @@ https://www.jianshu.com/p/e62fa839aa41
 禁止重排序 volatile 禁止了指令重排。
 
 
+那么，什么时候应该使用ReentrantLock？答案很简单，在你需要使用synchronized无法提供的功能时，
+    例如定时锁、可中断锁、非块结构锁、多个条件变量、或锁轮询。
+ReentrantLock还具有很好的可伸缩性，如果你确实遇到锁竞争激烈的情况，就使用它吧。
+不过请记住，绝大多数synchronized块几乎从未遇过任何竞争，更不用说激烈的竞争了。
+我建议你先使用synchronized，直到被证明synchronized不能满足需求了，而不是简单的假设“ReentrantLock的性能会更好”。
+
 
 相比synchronized，ReentrantLock增加了一些高级功能。主要来说主要有三点:1等待可中断;2可
 实现公平锁;3可实现选择性通知(锁可以绑定多个条件) 
