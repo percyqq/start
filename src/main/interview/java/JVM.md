@@ -9,9 +9,11 @@ JVM 回收线程的个数
 
 wms项目的参考
 -server -Xms4096M -Xmx6144M -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M -Xss256k -XX:MaxTenuringThreshold=15 
-    -Xnoclassgc -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection 
+    -Xnoclassgc -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled 
+    -XX:+UseCMSCompactAtFullCollection 
     -XX:CMSInitiatingOccupancyFraction=65 -XX:+UseCMSInitiatingOccupancyOnly -XX:+ExplicitGCInvokesConcurrent 
-    -XX:CMSFullGCsBeforeCompaction=0 -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC 
+    -XX:CMSFullGCsBeforeCompaction=0 -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps 
+    -XX:+PrintHeapAtGC 
     -Xloggc:logs/JVMGC.log -XX:+CMSClassUnloadingEnabled 
     -Djava.awt.headless=true -Duser.timezone=GMT+08 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
 
@@ -169,7 +171,8 @@ https://hllvm-group.iteye.com/group/wiki/2859-JVM
     ParNew收集器并不会比Serial收集器有更好的效果。
 
 3.Parallel Scavenge收集器
-　　Parallel Scavenge收集器（下称PS收集器）也是一个多线程收集器，也是使用复制算法，但它的对象分配规则与回收策略都与ParNew收集器有所不同，它是以吞吐量最大化（即GC时间占总运行时间最小）为目标的收集器实现，它允许较长时间的STW换取总吞吐量最大化。
+　　Parallel Scavenge收集器（下称PS收集器）也是一个多线程收集器，也是使用复制算法，但它的对象分配规则与回收策略都与ParNew收集器有所不同，
+它是以吞吐量最大化（即GC时间占总运行时间最小）为目标的收集器实现，它允许较长时间的STW换取总吞吐量最大化。
 
 4.Serial Old收集器
 　　Serial Old是单线程收集器，使用标记－整理算法，是老年代的收集器，上面三种都是使用在新生代收集器。
