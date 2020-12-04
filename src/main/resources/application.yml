@@ -10,6 +10,10 @@ logging:
   level:
     org.learn: DEBUG
 
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:sql*Mapper/*Dao.xml
+  configuration:
+    mapUnderscoreToCamelCase: true
 
 
 
