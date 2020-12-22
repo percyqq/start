@@ -15,6 +15,18 @@
 哦，索引有关的知识我们暂时就问这么多吧。你们线上数据的事务隔离级别是什么呀？
 
 
+关于 ： 联合索引
+# mysql会一直向右匹配直到遇到范围查询(>、<、between、like)就停止匹配，因而会查询到name字段。
+
+ACID
+    A:原子性  undo log 
+    C:一致性  Consistency)
+    I: 隔离型
+    D: Durability 持久性       事务一旦提交，它对数据库的改变就应该是永久性的。  [redo log]     
+
+
+
+
 https://www.jianshu.com/p/c189439fb32e
     MySQL 万字精华总结
 

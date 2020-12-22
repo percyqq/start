@@ -1,9 +1,13 @@
 package org.learn.java;
 
+import java.util.ArrayList;
+
 /**
  * @create: 2020-07-24 16:16
  */
 public class ConcurrentHashMapEmp {
+
+    ArrayList l;
 
     //https://mp.weixin.qq.com/s?__biz=MzAxNjk4ODE4OQ==&mid=2247490562&idx=3&sn=0f90a45efbff73dfbc311ec34fb2233a
 

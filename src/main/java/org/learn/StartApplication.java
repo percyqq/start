@@ -34,6 +34,7 @@ public class StartApplication implements CommandLineRunner, EnvironmentAware, Ap
     }
 
     DefaultSingletonBeanRegistry d;
+
     org.aspectj.lang.annotation.Pointcut f;
 
     @Override

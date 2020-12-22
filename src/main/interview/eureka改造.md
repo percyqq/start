@@ -15,9 +15,9 @@ Eureka作为注册中心，主要存在服务发现不及时的问题。
 4.Eureka Client不断的发起请求，并忽略HTTP超时的错误
 为了实现上述方案，需要单独开发Eureka Server/Client SDK。
 
-A》 在Eureka Server，主要是扩展了InstanceRegistry类，在注册、取消注册方法时更新Epoch。
+A》 在Eureka Server，主要是扩展了 InstanceRegistry 类，在注册、取消注册方法时更新Epoch。
     在Long Polling技术上，主要是利用Spring Web的 DeferredResult 来实现。
-B》在Eureka Client，主要是扩展了DiscoveryClient类。同时需要禁用Eureka Client的默认行为，以避免功能冲突。
+B》在Eureka Client，主要是扩展了 DiscoveryClient 类。同时需要禁用Eureka Client的默认行为，以避免功能冲突。
 
 【问题】
 1.兼容性

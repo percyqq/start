@@ -200,7 +200,37 @@ Redis解决秒杀/抢红包等高并发事务活动
     秒杀到指定秒杀数后，Sorted Set不在接受秒杀请求，并显示返回标识
     秒杀活动完全结束后，同步Redis数据到数据库，秒杀正式结束  
     
-    
+
+1）redis cluster节点间采取gossip协议进行通信
+2）10000端口  每个节点都有一个专门用于节点间通信的端口，就是自己提供服务的端口号+10000
+3）交换的信息  故障信息，节点的增加和移除，hash slot信息，等等
+
+Redis Cluster 则采用的是虚拟槽分区算法。其中提到了槽（Slot）的概念。这个槽是用来存放缓存信息的单位，
+    在 Redis 中将存储空间分成了 16384 个槽，也就是说 Redis Cluster 槽的范围是 0 -16383（2^4 * 2^10）。
+    缓存信息通常是用 Key-Value 的方式来存放的，在存储信息的时候，集群会对 Key 进行 CRC16 校验并对 16384 取模（slot = CRC16(key)%16383）。
+    得到的结果就是 Key-Value 所放入的槽，从而实现自动分割数据到不同的节点上。然后再将这些槽分配到不同的缓存节点中保存。
+
+1、判断节点宕机
+　　如果一个节点认为另外一个节点宕机，那么就是pfail，主观宕机
+　　如果多个节点都认为另外一个节点宕机了，那么就是fail，客观宕机，跟哨兵的原理几乎一样，sdown，odown
+　　在cluster-node-timeout内，某个节点一直没有返回pong，那么就被认为pfail
+　　如果一个节点认为某个节点pfail了，那么会在gossip ping消息中，ping给其他节点，如果超过半数的节点都认为pfail了，那么就会变成fail
+2、从节点过滤
+　　对宕机的master node，从其所有的slave node中，选择一个切换成master node
+　　检查每个slave node与master node断开连接的时间，如果超过了cluster-node-timeout * cluster-slave-validity-factor，那么就没有资格切换成master
+　　这个也是跟哨兵是一样的，从节点超时过滤的步骤
+3、从节点选举
+　　哨兵：对所有从节点进行排序，slave priority，offset，run id
+　　每个从节点，都根据自己对master复制数据的offset，来设置一个选举时间，offset越大（复制数据越多）的从节点，选举时间越靠前，优先进行选举
+　　所有的master node开始slave选举投票，给要进行选举的slave进行投票，如果大部分master node（N/2 + 1）都投票给了某个从节点，
+   那么选举通过，那个从节点可以切换成master   从节点执行主备切换，从节点切换为主节点
+ 
+
+
+
+
+
+
 
 分布式锁
 https://github.com/shishan100/Java-Interview-Advanced/blob/master/docs/distributed-system/distributed-lock-redis-vs-zookeeper.md
@@ -342,7 +372,8 @@ redis重启的时候会优先载入AOF文件来恢复原始的数据,因为在�
     使用AOF 会让你的Redis更加耐久: 你可以使用不同的fsync策略：无fsync,每秒fsync,每次写的时候fsync
     AOF文件是一个只进行追加的日志文件,所以不需要写入seek
     Redis 可以在 AOF 文件体积变得过大时，自动地在后台对 AOF 进行重写
-    AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 导出（export） AOF 文件也非常简单
+    AOF 文件有序地保存了对数据库执行的所有写入操作， 这些写入操作以 Redis 协议的格式保存， 
+    因此 AOF 文件的内容非常容易被人读懂， 对文件进行分析（parse）也很轻松。 导出（export） AOF 文件也非常简单
 缺点
     对于相同的数据集来说，AOF 文件的体积通常要大于 RDB 文件的体积
     根据所使用的 fsync 策略，AOF 的速度可能会慢于 RDB

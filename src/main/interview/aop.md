@@ -41,7 +41,7 @@ protected Object invokeWithinTransaction(Method method, Class<?> targetClass, fi
 @Slf4j
 @Order(5)
 public class JwtAop {
-    @Pointcut("execution(public * com.alsc.scm.asset.web.test.*.*(..))")
+    @Pointcut("execution(public * com.web.test.*.*(..))")
     public void lockPointcut1() {}
     //
     @Around("lockPointcut1()")
