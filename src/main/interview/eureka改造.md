@@ -55,7 +55,7 @@ minos针对RestTemplate实现了自己的ClientHttpRequestInterceptor，针对Fe
 `这样在发起对其他服务的调用时，以业务无感知的方式从ThreadLocal取出灰度标记，放到请求头里。
 
 #!在多线程场景下，标记传递会比较复杂。
-   如果是自定义线程池，ThreadLocal消息会丢失，此时需要用minos包里KeruyunExecutors提供的方法来改造代码，这个辅助类会创造一个特殊的线程池。
+   如果是自定义线程池，ThreadLocal消息会丢失，此时需要用minos包里 Executors提供的方法来改造代码，这个辅助类会创造一个特殊的线程池。
    如果是用到Spring中的@Async注解，minos会自动拦截关键的方法，利用上述特殊的线程池替换默认的线程池。
    这个特殊的线程池逻辑也不复杂，主要是在execute方法执行时，从当前线程上下文中复制所有信息，并传入一个包装类Runnable / Callable。
    这个Runnable / Callable会在执行时将前面传递的信息直接复制到线程上下文。这样也就实现了线程上下文的跨线程传递。

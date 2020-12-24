@@ -8,7 +8,6 @@ import java.util.Map;
 
 /**
  * @description:
- * @author: qingqing
  * @create: 2020-08-03 10:25
  */
 public class CollectionUtils {

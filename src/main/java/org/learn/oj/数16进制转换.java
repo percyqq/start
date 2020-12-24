@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 /**
  * @description:
- * @author: qingqing
  * @create: 2020-10-20 23:18
  */
 public class 数16进制转换 {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 /**
  * @description:
- * @author: qingqing
  * @create: 2020-08-12 12:36
  */
 public class 泛型 {

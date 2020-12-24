@@ -27,8 +27,8 @@ public class LRU实现 {
             MAX_CACHE_SIZE = (int) (Math.ceil(size / 0.75) + 1);
 
             // LinkedHashMap 实现
-            LinkedHashMap<String, String> hashMap = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
-                protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+            LinkedHashMap<String, String> hashMap = new LinkedHashMap(MAX_CACHE_SIZE, 0.75f, true) {
+                protected boolean removeEldestEntry(Map.Entry eldest) {
                     return size() > MAX_CACHE_SIZE;
                 }
             };

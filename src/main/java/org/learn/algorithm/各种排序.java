@@ -21,8 +21,8 @@ public class 各种排序 {
     //冒泡
     private static void bubbleSort(int[] arr) {
         int len = arr.length;
-        for (var i = 0; i < len - 1; i++) {
-            for (var j = 0; j < len - 1 - i; j++) {
+        for (int i = 0; i < len - 1; i++) {
+            for (int j = 0; j < len - 1 - i; j++) {
                 if (arr[j] > arr[j + 1]) {        // 相邻元素两两对比
                     swap(arr, j, j + 1);
                 }
@@ -46,7 +46,7 @@ public class 各种排序 {
         int len = arr.length, minIndex;
         for (int i = 0; i < len - 1; i++) {
             minIndex = i;
-            for (var j = i + 1; j < len; j++) {
+            for (int j = i + 1; j < len; j++) {
                 if (arr[j] < arr[minIndex]) {     // 寻找最小的数
                     minIndex = j;                 // 将最小数的索引保存
                 }
@@ -92,7 +92,7 @@ public class 各种排序 {
 
 
     private static void swap(int[] arr, int i, int j) {
-        var temp = arr[i];        // 元素交换
+        int temp = arr[i];        // 元素交换
         arr[i] = arr[j];
         arr[j] = temp;
     }

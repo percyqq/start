@@ -11,9 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
-import java.sql.ConnectionBuilder;
 import java.sql.SQLException;
-import java.sql.ShardingKeyBuilder;
 
 /**
  * @create: 2020-08-10 10:11
@@ -61,14 +59,12 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Init
     }
 
 
-    @Override
-    public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
-        return null;
-    }
-
-
-    @Override
-    public ConnectionBuilder createConnectionBuilder() throws SQLException {
-        return null;
-    }
+//    @Override
+//    public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
+//        return null;
+//    }
+//    @Override
+//    public ConnectionBuilder createConnectionBuilder() throws SQLException {
+//        return null;
+//    }
 }

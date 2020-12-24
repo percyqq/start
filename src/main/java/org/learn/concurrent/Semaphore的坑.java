@@ -1,6 +1,5 @@
 package org.learn.concurrent;
 
-import org.springframework.web.servlet.DispatcherServlet;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,7 +7,6 @@ import java.util.concurrent.*;
 
 /**
  * @description:
- * @author: qingqing
  * @create: 2020-08-05 09:49
  */
 public class Semaphore的坑 {
@@ -33,7 +31,7 @@ public class Semaphore的坑 {
 
 
         xx();
-        DispatcherServlet 都是;
+        //DispatcherServlet 都是;
         Collections.sort(null);
         Arrays.sort(new Object[]{});
 

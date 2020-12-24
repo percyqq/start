@@ -9,14 +9,18 @@
 package org.learn.web.dao;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * dog
- * @author 
  */
 @Data
+@AllArgsConstructor
 public class Dog implements Serializable {
+
     private Integer id;
 
     private String name;
@@ -25,5 +29,6 @@ public class Dog implements Serializable {
 
     private String test;
 
-    private static final long serialVersionUID = 1L;
+    private Date time;
+
 }

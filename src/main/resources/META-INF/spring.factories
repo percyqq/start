@@ -1,0 +1,2 @@
+# Auto Configure
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.b.boot.autoconfigure.druid.multi.MultiDataSourceAutoConfiguration
