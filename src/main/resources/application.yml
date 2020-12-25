@@ -27,6 +27,19 @@ eureka:
 
 
 spring:
+  spring:
+    kafka:
+      producer:
+        key-serializer:
+        value-serializer:
+        batch-size:
+        retries:
+    mvc:
+      date-format: 'yyyy-MM-dd HH:mm:ss'
+    jackson:
+      date-format: 'yyyy-MM-dd HH:mm:ss'
+      time-zone: 'GMT+8'
+
   ## 分表配置
   shardingsphere:
     props:

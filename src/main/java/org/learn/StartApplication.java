@@ -1,6 +1,8 @@
 package org.learn;
 
 import lombok.extern.slf4j.Slf4j;
+import org.learn.config.ExcludeOuterConfigFilter;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.CommandLineRunner;
@@ -8,23 +10,36 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(scanBasePackages = "org.learn", exclude = {
-        DataSourceAutoConfiguration.class,
-        RedisAutoConfiguration.class,
-        //JedisConnectionConfiguration.class
-})
 @Slf4j
 @EnableAsync
 
-@EnableAspectJAutoProxy(exposeProxy = true)
+@SpringBootApplication(
+        scanBasePackages = "org.learn",
+        exclude = { DataSourceAutoConfiguration.class, RedisAutoConfiguration.class, //JedisConnectionConfiguration.class
+})
+//@ComponentScan(basePackages = {"org.learn", "com"},
+//        excludeFilters = {@ComponentScan.Filter(type = FilterType.CUSTOM, classes = ExcludeOuterConfigFilter.class)}
+//)
+
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
+@MapperScan({"org.learn.**.dao", "org.learn.**.mapper"})
+@ServletComponentScan(basePackages = "org.learn")
+@EnableFeignClients( basePackages = {"org.learn"})
+
+@EnableRetry(proxyTargetClass = true)
 public class StartApplication implements CommandLineRunner, EnvironmentAware, ApplicationContextAware {
 
     private Environment environment;
@@ -33,6 +48,7 @@ public class StartApplication implements CommandLineRunner, EnvironmentAware, Ap
         SpringApplication.run(StartApplication.class, args);
     }
 
+    org.redisson.Redisson redisson;
     DefaultSingletonBeanRegistry d;
 
     org.aspectj.lang.annotation.Pointcut f;

@@ -48,7 +48,6 @@ import javax.net.ssl.X509TrustManager;
 
 public class HttpUtil {
 
-
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
     private static CloseableHttpClient httpClient;
@@ -133,22 +132,15 @@ public class HttpUtil {
                     httpPut.setHeader(encodeHeader(header.getName()), encodeHeader(header.getValue()));
                 }
             }
-            logger.info("put method");
             StringEntity entity = new StringEntity(jsonParam, "utf-8");// 解决中文乱码问题
-            logger.info("put method");
             entity.setContentEncoding("UTF-8");
-            logger.info("put method");
             entity.setContentType("application/json");
             httpPut.setEntity(entity);
-            logger.info("put method");
             response = httpClient.execute(httpPut);
-            logger.info("put method");
             if (response != null) {
-                logger.info("put method");
                 result = EntityUtils.toString(response.getEntity());
             }
         } catch (ClientProtocolException e) {
-            logger.info("put method");
             logger.error("HttpClient access get response failed Exceptione", e);
         } catch (IOException e) {
             logger.error("HttpClient access get response failed Exceptione", e);
