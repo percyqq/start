@@ -6,13 +6,28 @@ package org.learn.algorithm.easy;
  */
 public class 交换链表相邻的节点 {
 
+    public static void main(String[] args) {
+        ListNode node = ListNode.create(1, 2, 3, 5);
+        System.out.println(node);
+    }
+
+    // 1 -> 2 -> 3 -> 4
+    // 1 ,  2 -> 3 -> 4
+    private ListNode reverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode newNode = reverse(head.next);
+
+
+        return null;
+    }
+
     //Definition for singly-linked list.
-    public class ListNode {
+    public static class ListNode {
         int val;
         ListNode next;
-
-        ListNode() {
-        }
 
         ListNode(int val) {
             this.val = val;
@@ -21,6 +36,37 @@ public class 交换链表相邻的节点 {
         ListNode(int val, ListNode next) {
             this.val = val;
             this.next = next;
+        }
+
+        public static ListNode create(int... values) {
+            if (values != null && values.length > 0) {
+                ListNode head = new ListNode(values[0]);
+                ListNode cursor = head;
+                for (int i = 1; i < values.length; i++) {
+                    ListNode curr = new ListNode(values[i]);
+                    cursor.next = curr;
+                    cursor = curr;
+                }
+                return head;
+            }
+
+            return null;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder("[");
+            ListNode curr = this;
+            if (curr == null) {
+                return "[]";
+            } else {
+                sb.append(curr.val);
+
+                while ((curr = curr.next) != null) {
+                    sb.append(",").append(curr.val);
+                }
+                sb.append("]");
+                return sb.toString();
+            }
         }
     }
 

@@ -48,7 +48,8 @@ public class StartApplication implements CommandLineRunner, EnvironmentAware, Ap
         SpringApplication.run(StartApplication.class, args);
     }
 
-    org.redisson.Redisson redisson;
+
+    //org.redisson.Redisson redisson;
     DefaultSingletonBeanRegistry d;
 
     org.aspectj.lang.annotation.Pointcut f;

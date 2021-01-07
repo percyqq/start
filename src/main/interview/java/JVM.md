@@ -1,3 +1,11 @@
+GCRoot，卡表。
+	锁，竞争队列
+	垃圾回收算法。
+	volatile的语义实现，原理。
+	as-if-serial 与 happens-before
+	MESI缓存一致性
+
+
 从 Java 8 开始，JDK 使用 invokedynamic 及 VM Anonymous Class 结合来 实现 Java 语言层面上的 Lambda 表达式。
 
 JVM调优

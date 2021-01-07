@@ -1,8 +1,8 @@
 package org.learn.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+//import org.redisson.api.RLock;
+//import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -14,8 +14,8 @@ import javax.annotation.Resource;
 @Component
 public class RedisionTemplate {
 
-    @Resource
-    private RedissonClient redissonClient;
+//    @Resource
+//    private RedissonClient redissonClient;
 
     public interface RedissonLockExecutor<T> {
         /**
@@ -34,20 +34,21 @@ public class RedisionTemplate {
     }
 
     public <T> T execute(RedissonLockExecutor<T> executor) {
-        RLock lock = redissonClient.getLock(executor.getLockName());
-        if (lock.isLocked()) {
-            log.info("repeat request execute {}", executor.getLockName());
-            throw new RuntimeException("msg");
-        }
-        lock.lock();
-        try {
-            return executor.execute();
-        } finally {
-            if (lock != null && lock.isLocked()) {
-                lock.unlock();
-            }
-
-        }
+//        RLock lock = redissonClient.getLock(executor.getLockName());
+//        if (lock.isLocked()) {
+//            log.info("repeat request execute {}", executor.getLockName());
+//            throw new RuntimeException("msg");
+//        }
+//        lock.lock();
+//        try {
+//            return executor.execute();
+//        } finally {
+//            if (lock != null && lock.isLocked()) {
+//                lock.unlock();
+//            }
+//
+//        }
+        return null;
 
     }
 
