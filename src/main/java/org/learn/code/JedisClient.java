@@ -2,9 +2,6 @@ package org.learn.code;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import com.keruyun.gateway.commons.Constants;
-import com.keruyun.gateway.commons.utils.AsyncUtils;
-import com.keruyun.gateway.commons.utils.GsonSerializer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.slf4j.Logger;
@@ -25,16 +22,13 @@ import java.util.concurrent.Callable;
 /**
  * Jedis 客户端
  */
-public class JedisClient {
+public class JedisClient extends JedisPool{
 
     private static final Logger logger = LoggerFactory.getLogger(JedisClient.class);
 
     public JedisPool jedisPool;
 
-    @Resource
-    private AsyncUtils asyncUtils;
-    @Resource
-    private GsonSerializer gsonSerializer;
+
 
     /**
      * 释放连接
@@ -46,9 +40,9 @@ public class JedisClient {
     public void release(Jedis jedis, JedisPool jedisPool, boolean isBroken) {
         if (jedis != null) {
             if (isBroken) {
-                jedisPool.returnBrokenResource(jedis);
+                super.returnBrokenResource(jedis);
             } else {
-                jedisPool.returnResource(jedis);
+                super.returnResource(jedis);
             }
         }
     }
@@ -162,7 +156,7 @@ public class JedisClient {
             if (CollectionUtils.isNotEmpty(values)) {
                 List<T> list = new ArrayList<>();
                 for (String value : values) {
-                    list.add(gsonSerializer.deserialize(value, typeoff));
+                    //list.add(gsonSerializer.deserialize(value, typeoff));
                 }
                 return list;
             }
@@ -180,15 +174,15 @@ public class JedisClient {
         Map<String, String> keyValues = Maps.newHashMap();
         for (String key : keyObjs.keySet()) {
             T t = keyObjs.get(key);
-            String data = gsonSerializer.serialize(t);
+            String data = "";//gsonSerializer.serialize(t);
             keyValues.put(key, data);
         }
         try (Jedis jedis = jedisPool.getResource()) {
-            String result = Joiner.on(Constants.CACHE_VALUE_SPLIT).withKeyValueSeparator(Constants.CACHE_VALUE_SPLIT).join(keyValues);
-            jedis.mset(result.split(Constants.CACHE_VALUE_SPLIT));
-            for (String key : keyValues.keySet()) {
-                jedis.expire(key, expireTime);
-            }
+//            String result = Joiner.on(Constants.CACHE_VALUE_SPLIT).withKeyValueSeparator(Constants.CACHE_VALUE_SPLIT).join(keyValues);
+//            jedis.mset(result.split(Constants.CACHE_VALUE_SPLIT));
+//            for (String key : keyValues.keySet()) {
+//                jedis.expire(key, expireTime);
+//            }
         }
     }
 
@@ -381,7 +375,7 @@ public class JedisClient {
         boolean isBroken = false;
         try {
             jedis = jedisPool.getResource();
-            reply = jedis.set(key, value, nxxx, expx, time);
+            //reply = jedis.set(key, value, nxxx, expx, time);
         } catch (Exception e) {
             logger.warn("failed : jedis get key : " + key);
             isBroken = true;
@@ -531,9 +525,9 @@ public class JedisClient {
         try {
             Object res = valueLoader.call();
             //异步写入Redis
-            asyncUtils.doAsync(() -> {
-                setObj(key, res, expireTime);
-            });
+//            asyncUtils.doAsync(() -> {
+//                setObj(key, res, expireTime);
+//            });
             return res;
         } catch (Exception e) {
             e.printStackTrace();
@@ -572,10 +566,10 @@ public class JedisClient {
     //  expx    EX|PX, expire time units: EX = seconds; PX = milliseconds
     public boolean tryLock(String key, String requestId, int expireTime) {
         try (Jedis jedis = jedisPool.getResource()) {
-            String result = jedis.set(key, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
-            if (LOCK_SUCCESS.equals(result)) {
-                return true;
-            }
+//            String result = jedis.set(key, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+//            if (LOCK_SUCCESS.equals(result)) {
+//                return true;
+//            }
             return false;
         }
     }
