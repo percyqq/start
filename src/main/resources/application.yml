@@ -27,18 +27,19 @@ eureka:
 
 
 spring:
-  spring:
-    kafka:
-      producer:
-        key-serializer:
-        value-serializer:
-        batch-size:
-        retries:
-    mvc:
-      date-format: 'yyyy-MM-dd HH:mm:ss'
-    jackson:
-      date-format: 'yyyy-MM-dd HH:mm:ss'
-      time-zone: 'GMT+8'
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      batch-size:
+      retries:
+  mvc:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    format:
+      date: 'yyyy-MM-dd HH:mm:ss'
+  jackson:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    time-zone: 'GMT+8'
 
   ## 分表配置
   shardingsphere:
@@ -67,9 +68,9 @@ spring:
         poolName: scm-wms-sharding-master
         driverClass: com.mysql.jdbc.Driver
 
-        jdbcUrl: jdbc:mysql://localhost:3306/learn1?useUnicode=true&characterEncoding=utf-8
+        jdbcUrl: jdbc:mysql://localhost:3306/learn?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
         username: root
-        password: QQ900512
+        password: 20210112
 
         maxActive: 100
         minIdle: 3
@@ -95,9 +96,9 @@ spring:
         poolName: scm-wms-sharding-slave
         driverClass: com.mysql.jdbc.Driver
 
-        jdbcUrl:  jdbc:mysql://localhost:3306/learn1?useUnicode=true&characterEncoding=utf-8
+        jdbcUrl:  jdbc:mysql://localhost:3306/learn1?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
         username: root
-        password: QQ900512
+        password: 20210112
 
         maxActive: 100
         minIdle: 3

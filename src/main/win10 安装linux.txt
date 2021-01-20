@@ -1,0 +1,163 @@
+
+开启功能：在win10系统上安装linux子系统
+https://www.cnblogs.com/linuxprobe-sarah/p/10935217.html
+
+win10 LTSC版如何安装应用商店Microsoft Store
+https://jingyan.baidu.com/article/37bce2be35eee95102f3a2c9.html
+
+
+
+https://answers.microsoft.com/zh-hans/windows/forum/all/win10%E6%B2%A1%E6%9C%89microsoft-store/48ccf8b8-091e-4b65-a76d-957e8975dfe8
+
+查看下开始>>设置>>应用>> 查看下是否有microsoft store ？
+通过开始>>设置>>更新和安全>>疑难解答>>查看一下是否有Windows应用商店应用
+有的话，点击 ，根据提示完成修复。
+
+
+
+安装Microsoft Store
+https://answers.microsoft.com/zh-hans/windows/forum/windows_10-windows_store/windows/508835b9-74fb-4457-9f72-8a78160b5af1
+
+https://jingyan.baidu.com/article/37bce2be35eee95102f3a2c9.html
+
+
+
+重置密码：
+https://blog.csdn.net/ccagy/article/details/108005571
+PowerShell下 Ubuntu config --default-user root
+
+
+源设置
+https://blog.csdn.net/weixin_41884010/article/details/97898108
+
+sudo apt-get update
+
+在编辑sources.list文件不知道怎么退出。
+先按ESC退出编辑模式
+输入冒号（shift+分号），按WQ，接着ENTER
+即可返回指令界面。
+
+
+########################
+访问win10中的文件夹：
+cd  /mnt/d/
+
+
+
+###################################win10 Ubuntu中 安装及 配置mysql
+https://blog.csdn.net/weixin_43530726/article/details/91303898
+https://blog.csdn.net/weixin_39345384/article/details/80860060
+https://blog.csdn.net/weixin_33828101/article/details/89699230
+
+which mysqld
+
+/usr/bin                      客户端程序和mysql_install_db
+/var/lib/mysql            数据库和日志文件
+/var/run/mysqld        服务器
+/etc/mysql               配置文件my.cnf
+/usr/share/mysql       字符集，基准程序和错误消息
+/etc/init.d/mysql        启动mysql服务器
+
+
+ vim  /etc/mysql/mysql.conf.d/mysqld.cnf
+ 
+ =====>>>>  binlog的位置：
+ log_bin                 = /var/log/mysql/mysql-bin.log
+ 
+ 
+
+mysql -u root -p
+
+GRANT ALL PRIVILEGES ON *.* TO 'bkjk'@'%' IDENTIFIED BY 'test@123';
+
+mysql  5.8 : 
+use mysql;
+select user, host from user;
+update user set host = '%' where user = 'root';
+
+GRANT ALL ON *.* TO 'root'@'%';
+flush privileges;    
+
+#grant all privileges on *.* to 'root'@'%' ;
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '20210112';
+
+
+！！！！！！！查找记录master的bin的位置
+show master status;
+
+show global variables like '%binlog_format%';
+show global variables like 'log_bin';
+show binary logs;
+
+
+
+
+打开3306端口：sudo ufw allow 3306							防火墙
+开启防火墙：sudo ufw enable
+设置默认的防火墙防御：sudo ufw default deny
+查看防火墙的状态：sudo ufw status
+
+10.242.0.155
+sudo service mysql stop
+sudo service mysql start
+
+
+
+
+############################################# SSHD
+在开启SSHD服务时报错.
+sshd re-exec requires execution with an absolute path
+用绝对路径启动,也报错如下:
+Could not load host key: /etc/ssh/ssh_host_key
+Could not load host key: /etc/ssh/ssh_host_rsa_key
+Could not load host key: /etc/ssh/ssh_host_dsa_key
+Disabling protocol version 1. Could not load host key
+Disabling protocol version 2. Could not load host key
+sshd: no hostkeys available — exiting
+解决过程:
+#ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
+#ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
+#/usr/sbin/sshd
+ 
+2种方式启动：
+sudo /etc/init.d/ssh start
+sudo service ssh start
+
+ ps -e|grep ssh
+
+
+
+#############################################  安装redis
+From the official Ubuntu PPA
+You can install the latest stable version of Redis from the redislabs/redis package repository. Add the repository to the apt index, update it and install:
+
+sudo add-apt-repository ppa:redislabs/redis
+sudo apt-get update
+sudo apt-get install redis
+
+
+#sudo  apt-get install redis-server
+service  redis status
+whereis redis
+
+
+sudo redis-server /etc/redis/redis.conf &
+
+为了解决问题，决定先uninstall掉老版本的redis
+apt-get remove redis-server
+apt-get autoremove
+sudo ufw allow 6379	
+
+设置开机自动启动，关机自动关闭
+update-rc.d redis-server defaults
+
+
+
+####################################################
+canal 配置文件修改， 最后换行加上pause，方便定位问题。
+rem -Dlogback.configurationFile="%logback_configurationFile%"
+
+
+
+
+

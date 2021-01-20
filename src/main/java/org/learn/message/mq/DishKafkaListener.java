@@ -35,61 +35,61 @@ public class DishKafkaListener {
     @Autowired
     ExecutorService mqExecutorService;
 
-    @Value("${kafka.queue.sku.topic}")
+    @Value("${kafka.queue.sku.topic:}")
     private String topicSku;
 
-    @Value("${kafka.queue.skuProperty.topic}")
+    @Value("${kafka.queue.skuProperty.topic:}")
     private String topicSkuProperty;
 
-    @Value("${kafka.queue.skuPropertyType.topic}")
+    @Value("${kafka.queue.skuPropertyType.topic:}")
     private String topicSkuPropertyType;
 
-    @Value("${kafka.queue.skuType.topic}")
+    @Value("${kafka.queue.skuType.topic:}")
     private String topicSkuType;
 
-    @Value("${kafka.queue.skuUm.topic}")
+    @Value("${kafka.queue.skuUm.topic:}")
     private String topicSkuUm;
 
-    @Value("${kafka.queue.skuGrant.topic}")
+    @Value("${kafka.queue.skuGrant.topic:}")
     private String topicSkuGrant;
 
 
-    @KafkaListener(groupId = "${kafka.queue.sku.group}", topics = "${kafka.queue.sku.topic}")
+    //@KafkaListener(groupId = "${kafka.queue.sku.group:135}", topics = "${kafka.queue.sku.topic:135-none}")
     public void consumerSku(String message) {
         printLog("Sku-" + topicSku, message);
         MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncDishBrandParser.parse(applicationContext, topicSku, message);
         registerCallbackAndDoBuffer(mqSyncEvent);
     }
 
-    @KafkaListener(groupId = "${kafka.queue.skuType.group}", topics = "${kafka.queue.skuType.topic}")
+    //@KafkaListener(groupId = "${kafka.queue.skuType.group:246}", topics = "${kafka.queue.skuType.topic:246-xxx}")
     public void consumerSkuType(String message) {
         printLog("SkuType-" + topicSkuType, message);
         MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncEventParser.MqSyncDishBrandTypeParser.parse(applicationContext, topicSkuType, message);
         registerCallbackAndDoBuffer(mqSyncEvent);
     }
 
-//    @KafkaListener(groupId = "${kafka.queue.skuProperty.group}", topics = "${kafka.queue.skuProperty.topic}")
+//    @KafkaListener(groupId = "${kafka.queue.skuProperty.group}", topics = "${kafka.queue.skuProperty.topic:}")
 //    public void consumerSkuProperty(String message) {
 //        printLog("SkuProperty-" + topicSkuProperty, message);
 //        MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncSkuPropertyEventParser.parse(applicationContext, topicSkuProperty, message);
 //        registerCallbackAndDoBuffer(mqSyncEvent);
 //    }
 //
-//    @KafkaListener(groupId = "${kafka.queue.skuPropertyType.group}", topics = "${kafka.queue.skuPropertyType.topic}")
+//    @KafkaListener(groupId = "${kafka.queue.skuPropertyType.group}", topics = "${kafka.queue.skuPropertyType.topic:}")
 //    public void consumerSkuPropertyType(String message) {
 //        printLog("SkuPropertyType-" + topicSkuPropertyType, message);
 //        MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncSkuPropertyTypeEventParser.parse(applicationContext, topicSkuPropertyType, message);
 //        registerCallbackAndDoBuffer(mqSyncEvent);
 //    }
 //
-//    @KafkaListener(groupId = "${kafka.queue.skuUm.group}", topics = "${kafka.queue.skuUm.topic}")
+//    @KafkaListener(groupId = "${kafka.queue.skuUm.group}", topics = "${kafka.queue.skuUm.topic:}")
 //    public void consumerSkuUm(String message) {
 //        printLog("SkuUm-" + topicSkuUm, message);
 //        MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncSkuUmEventParser.parse(applicationContext, topicSkuUm, message);
 //        registerCallbackAndDoBuffer(mqSyncEvent);
 //    }
 //
-//    @KafkaListener(groupId = "${kafka.queue.skuGrant.group}", topics = "${kafka.queue.skuGrant.topic}")
+//    @KafkaListener(groupId = "${kafka.queue.skuGrant.group}", topics = "${kafka.queue.skuGrant.topic:}")
 //    public void consumerSkuGrant(String message) {
 //        printLog("SkuGrant-" + topicSkuGrant, message);
 //        MqSyncEvent<MqSyncMessage> mqSyncEvent = MqSyncDishBrandGrantParser.parse(applicationContext, topicSkuGrant, message);
