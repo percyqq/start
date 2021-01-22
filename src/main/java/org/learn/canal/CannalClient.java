@@ -16,6 +16,17 @@ public class CannalClient implements InitializingBean {
 
     private final static int BATCH_SIZE = 1000;
 
+    /**
+     *  ==>  [conf/canal.properties] 在demo场景一般不会修改
+     *  ==>  [conf/canal.properties] 这里是需要连接canal的server端！ 注意开放对应的端口！
+     *  sudo ufw allow 11111
+     *
+     *  而   [conf/example/instance.properties]  里面才是配置对应的数据库连接地址的！
+     *       监听对应的mysql-binlog！
+     *
+     *  坑：
+     *  https://blog.csdn.net/weixin_44188501/article/details/107392089
+     * */
     public static void main(String[] args) {
 
         try {
@@ -46,10 +57,10 @@ public class CannalClient implements InitializingBean {
 
         // 创建链接
         CanalConnector connector = CanalConnectors.newSingleConnector(
-                new InetSocketAddress("10.242.0.155", 13306), "example", "bkjk", "test@123");
+                new InetSocketAddress("10.242.1.3", 11111), "example", "", "");
 
         //connector = CanalConnectors.newSingleConnector(
-        //        new InetSocketAddress("127.0.0.1", 3306), "test", "root", "20210112");
+        //        new InetSocketAddress("127.0.0.1", 13306), "test", "bkjk", "test@123");
 
         try {
             //打开连接

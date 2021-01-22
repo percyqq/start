@@ -27,10 +27,16 @@ https://blog.csdn.net/ccagy/article/details/108005571
 PowerShell下 Ubuntu config --default-user root
 
 
-源设置
-https://blog.csdn.net/weixin_41884010/article/details/97898108
+源设置  ubuntu 20的源，注意版本
+https://blog.csdn.net/no1xium/article/details/107690340
+
+18：
+https://www.cnblogs.com/ssxblog/p/11357126.html
+
+
 
 sudo apt-get update
+sudo apt-get upgrade
 
 在编辑sources.list文件不知道怎么退出。
 先按ESC退出编辑模式
@@ -44,12 +50,38 @@ cd  /mnt/d/
 
 
 
+apt-cache search openjdk
+apt-get install openjdk-8
+5.安装成功后，还需要配置java_home变量：
+
+1)输入命令：echo $java_home
+2）which javac
+3）file /usr/bin/javac
+4）file /etc/alternatives/javac
+5）file /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+	通过file命令找到最终生效的6）中需要的路径
+6）sudo echo export JAVA_HOME=”/usr/lib/jvm/java-8-openjdk-amd64/bin”>>~/.bashrc
+7）source ~/.bashrc
+8）测试命令：tail ~/.bashrc
+
+
+
+
+
 ###################################win10 Ubuntu中 安装及 配置mysql
+apt-cache search mysql-server
+如果win10中安装了，需要先关掉mysql服务！
 https://blog.csdn.net/weixin_43530726/article/details/91303898
 https://blog.csdn.net/weixin_39345384/article/details/80860060
 https://blog.csdn.net/weixin_33828101/article/details/89699230
 
 which mysqld
+
+
+创建/var/run/mysqld目录后，运行了下面两条语句
+chown -R mysql /var/run/mysqld
+chgrp -R mysql /var/run/mysqld
+然后就可以启动mysql了。
 
 /usr/bin                      客户端程序和mysql_install_db
 /var/lib/mysql            数据库和日志文件
@@ -59,27 +91,84 @@ which mysqld
 /etc/init.d/mysql        启动mysql服务器
 
 
- vim  /etc/mysql/mysql.conf.d/mysqld.cnf
- 
- =====>>>>  binlog的位置：
- log_bin                 = /var/log/mysql/mysql-bin.log
- 
- 
+sudo vim  /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo usermod -d /var/lib/mysql/ mysql
+
+tail - 100f  /var/log/mysql/error.log
+sudo mkdir -p /var/run/mysqld/
+sudo chown -R mysql:mysql /var/run/mysqld/
+
+
+
+=====>>>>  binlog的位置：
+log_bin                 = /var/log/mysql/mysql-bin.log
+
+
+https://www.cnblogs.com/it-tsz/p/10206008.html
+sudo vim  /etc/mysql/debian.cnf
+[client]
+host     = localhost
+user     = debian-sys-maint
+password = kAwCltw07AYKKotF
+socket   = /var/run/mysqld/mysqld.sock
+[mysql_upgrade]
+host     = localhost
+user     = debian-sys-maint
+password = kAwCltw07AYKKotF
+socket   = /var/run/mysqld/mysqld.sock
+
+
+
+启动mysql需要密码：
+sudo passwd -d mysql
 
 mysql -u root -p
 
 GRANT ALL PRIVILEGES ON *.* TO 'bkjk'@'%' IDENTIFIED BY 'test@123';
 
-mysql  5.8 : 
+mysql  5.8 :
 use mysql;
 select user, host from user;
 update user set host = '%' where user = 'root';
 
 GRANT ALL ON *.* TO 'root'@'%';
-flush privileges;    
+flush privileges;
 
 #grant all privileges on *.* to 'root'@'%' ;
 ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '20210112';
+
+
+[mysqld]
+# 打开binlog
+log-bin=mysql-bin
+
+# 选择ROW(行)模式
+binlog-format = ROW
+
+# 配置MySQL replaction需要定义，不要和canal的slaveId重复
+server_id=1
+
+
+https://www.cnblogs.com/caicz/p/10855605.html
+设置gtid
+gtid_mode = ON
+enforce_gtid_consistency = ON
+
+重启。。
+
+
+修改字符集！！！
+ALTER DATABASE test CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+只修改表默认的字符集
+	ALTER TABLE table_name DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+修改表默认的字符集和所有字符列的字符集
+	ALTER TABLE table_name CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+test
+
+
+SHOW GRANTS;
+show variables like '%gtid%';
 
 
 ！！！！！！！查找记录master的bin的位置
@@ -92,7 +181,7 @@ show binary logs;
 
 
 
-打开3306端口：sudo ufw allow 3306							防火墙
+打开3306端口：sudo ufw allow 13306							防火墙
 开启防火墙：sudo ufw enable
 设置默认的防火墙防御：sudo ufw default deny
 查看防火墙的状态：sudo ufw status
@@ -118,7 +207,7 @@ sshd: no hostkeys available — exiting
 #ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
 #ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
 #/usr/sbin/sshd
- 
+
 2种方式启动：
 sudo /etc/init.d/ssh start
 sudo service ssh start
@@ -146,7 +235,7 @@ sudo redis-server /etc/redis/redis.conf &
 为了解决问题，决定先uninstall掉老版本的redis
 apt-get remove redis-server
 apt-get autoremove
-sudo ufw allow 6379	
+sudo ufw allow 6379
 
 设置开机自动启动，关机自动关闭
 update-rc.d redis-server defaults
@@ -157,7 +246,7 @@ update-rc.d redis-server defaults
 canal 配置文件修改， 最后换行加上pause，方便定位问题。
 rem -Dlogback.configurationFile="%logback_configurationFile%"
 
-
-
+ /var/log/mysql/mysql-bin.log
+ tar -zxvf canal.deployer-1.1.4.tar.gz -C /usr/local
 
 
