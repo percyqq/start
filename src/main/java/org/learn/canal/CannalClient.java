@@ -35,7 +35,8 @@ public class CannalClient implements InitializingBean {
             e.printStackTrace();
         }
     }
-
+    //注意检查ip变化！
+    private static final String IP = "10.242.1.40";
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -57,7 +58,7 @@ public class CannalClient implements InitializingBean {
 
         // 创建链接
         CanalConnector connector = CanalConnectors.newSingleConnector(
-                new InetSocketAddress("10.242.1.3", 11111), "example", "", "");
+                new InetSocketAddress(IP, 11111), "example", "", "");
 
         //connector = CanalConnectors.newSingleConnector(
         //        new InetSocketAddress("127.0.0.1", 13306), "test", "bkjk", "test@123");

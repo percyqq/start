@@ -50,7 +50,7 @@ public class MysqlBinlogConnector {
 
 
     //注意检查ip变化！
-    private static final String IP = "10.242.0.204";
+    private static final String IP = "10.242.1.40";
 
     public static void main(String[] args) throws Exception {
 
@@ -70,17 +70,18 @@ public class MysqlBinlogConnector {
 
         EventDeserializer eventDeserializer = new EventDeserializer();
         eventDeserializer.setCompatibilityMode(
-                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG,
-                EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
+                EventDeserializer.CompatibilityMode.DATE_AND_TIME_AS_LONG
+                // varchar类型的编码集是一致的话，就可以直接返回数据。
+                //,EventDeserializer.CompatibilityMode.CHAR_AND_BINARY_AS_BYTE_ARRAY
         );
 
         // do not deserialize EXT_DELETE_ROWS event data, return it as a byte array
-        eventDeserializer.setEventDataDeserializer(EventType.EXT_DELETE_ROWS,
-                new ByteArrayEventDataDeserializer());
-
-        // skip EXT_WRITE_ROWS event data altogether
-        eventDeserializer.setEventDataDeserializer(EventType.EXT_WRITE_ROWS,
-                new NullEventDataDeserializer());
+//        eventDeserializer.setEventDataDeserializer(EventType.EXT_DELETE_ROWS,
+//                new ByteArrayEventDataDeserializer());
+//
+//        // skip EXT_WRITE_ROWS event data altogether
+//        eventDeserializer.setEventDataDeserializer(EventType.EXT_WRITE_ROWS,
+//                new NullEventDataDeserializer());
 
         XidEventData d;//
         client.setEventDeserializer(eventDeserializer);
@@ -98,22 +99,6 @@ public class MysqlBinlogConnector {
                 List<Map<String, Object>> datas = null;
 
 
-                if (eventType == EventType.TABLE_MAP) {
-                    if (eventData instanceof TableMapEventData) {
-                        TableMapEventData tableMapEventData = (TableMapEventData) eventData;
-                        if (tableMapEventData != null) {
-                            // 没有监听的库不处理
-//                            if (!database.contains(tableMapEventData.getDatabase())) {
-//                                return;
-//                            }
-                            //log.info(" 时间:" + Calendar.getInstance().getTime() + ", tableId: " + tableMapEventData.getTableId() + ", tableName: " + tableMapEventData.getDatabase() + "." + tableMapEventData.getTable());
-                            table = new TableData(tableMapEventData.getDatabase(), tableMapEventData.getTable());
-                            tableMap.put(tableMapEventData.getTableId(), table);
-
-                        }
-                    }
-                }
-
                 if (eventType == EventType.EXT_WRITE_ROWS) {
                     WriteRowsEventData writeRowsEventData = (WriteRowsEventData) eventData;
 
@@ -121,21 +106,37 @@ public class MysqlBinlogConnector {
                         table = tableMap.get(writeRowsEventData.getTableId());
                         columnNames = getColumnNames(table);
 
-                        System.out.println(writeRowsEventData);
+                        //System.out.println("... writeRowsEventData "  + writeRowsEventData);
+                    }
+                }
+                else if (eventType == EventType.EXT_DELETE_ROWS){
+                    DeleteRowsEventData deleteRowsEventData = (DeleteRowsEventData) eventData;
+
+                    if (deleteRowsEventData != null) {
+                        table = tableMap.get(deleteRowsEventData.getTableId());
+                        columnNames = getColumnNames(table);
+                        //System.out.println("... deleteRowsEventData "  + deleteRowsEventData);
                     }
                 }
 
-                boolean canGetData = true;
+
                 if (eventType == EventType.TABLE_MAP) {
-                    TableMapEventData updateData = (TableMapEventData) eventData;
+                    TableMapEventData tableMapEventData = (TableMapEventData) eventData;
 
-                    table = tableMap.get(updateData.getTableId());
-                    columnNames = getColumnNames(table);
+                    if (tableMapEventData != null) {
+                        table = tableMap.get(tableMapEventData.getTableId());
+                        if(table == null) {
+                            table = new TableData(tableMapEventData.getDatabase(), tableMapEventData.getTable());
+                        }
+                        tableMap.put(tableMapEventData.getTableId(), table);
 
-                    //System.out.println(" .... TableMapEventData : " + updateData);
-                    canGetData = false;
+                        columnNames = getColumnNames(table);
+
+                        //System.out.println(" .... TableMapEventData : " + updateData);
+                        //log.info(" 时间:" + Calendar.getInstance().getTime() + ", tableId: " + tableMapEventData.getTableId() + ", tableName: " + tableMapEventData.getDatabase() + "." + tableMapEventData.getTable());
+
+                    }
                 }
-
 
                 if (eventType == EventType.UPDATE_ROWS || eventType == EventType.EXT_UPDATE_ROWS) {
                     UpdateRowsEventData updateData = (UpdateRowsEventData) eventData;
@@ -154,14 +155,13 @@ public class MysqlBinlogConnector {
                 }
 
                 // update 没有rows 数据....
-                if (canGetData) {
-                    datas = rowsToMap(eventData, columnNames);
+                System.out.println("====> " + event.toString());
+                datas = rowsToMap(eventData, columnNames);
 
-                }
                 if (datas != null) {
                     System.out.println(" || datas: " + datas);
                 }
-                System.out.println("====> " + event.toString());
+
             }
         });
         client.connect();
@@ -219,7 +219,11 @@ public class MysqlBinlogConnector {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
         SimpleDateFormat simpleDateFormatGMT = new SimpleDateFormat("d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
         try {
-            Method method = rowsEventData.getClass().getMethod("getRows");
+            if (rowsEventData instanceof TableMapEventData) {
+                System.out.println("....emm ignore TableMapEventData");
+                return null;
+            }
+            Method method =  rowsEventData.getClass().getMethod("getRows");
             Object value = method.invoke(rowsEventData);
             // 新增删除
             if (rowsEventData instanceof DeleteRowsEventData || rowsEventData instanceof WriteRowsEventData) {
@@ -241,6 +245,8 @@ public class MysqlBinlogConnector {
                             if (column.getType().contains("varchar")) {
                                 byte[] bt = (byte[]) row[i];
                                 item.put(column.getName(), new String(bt, "utf-8"));
+                            }else {
+                                item.put(column.getName(), row[i]);
                             }
                         } else {
                             item.put(column.getName(), row[i]);
@@ -267,8 +273,8 @@ public class MysqlBinlogConnector {
 
                             // decimal ==》 BigDecimal  float ==》 Float
                             if (column.getType().contains("varchar")) {
-                                byte[] bt = (byte[]) val;
-                                item.put(column.getName(), new String(bt, "utf-8"));
+                                //byte[] bt = (byte[]) val;new String(bt, "utf-8")
+                                item.put(column.getName(), val);
                             } else if (column.getType().contains("timestamp")) {
                                 if (val instanceof Long) {
                                     long time = (long) val;

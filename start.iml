@@ -22,6 +22,19 @@
     <facet type="Spring" name="Spring">
       <configuration />
     </facet>
+    <facet type="JRebel" name="JRebel">
+      <configuration>
+        <option name="ideModuleStorage">
+          <map>
+            <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
+            <entry key="com.zeroturnaround.jrebel.remoting.DeleteUnindexedFiles" value="false" />
+            <entry key="com.zeroturnaround.jrebel.remoting.ModuleRemoteServerSelection" value="off" />
+            <entry key="jrebelEnabled" value="true" />
+            <entry key="lastExternalPluginCheckTime" value="1611048370202" />
+          </map>
+        </option>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -258,31 +271,6 @@
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.14" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.11" level="project" />
-    <orderEntry type="library" name="Maven: com.alibaba.otter:canal.client:1.1.4" level="project" />
-    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.13.0" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.55.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.zookeeper:zookeeper:3.4.5" level="project" />
-    <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.2.2.Final" level="project" />
-    <orderEntry type="library" name="Maven: com.101tec:zkclient:0.10" level="project" />
-    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.58" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:29.0-jre" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
-    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:2.11.1" level="project" />
-    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" level="project" />
-    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.2.12.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.2.12.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-client:4.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-common:4.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-acl:4.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-remoting:4.5.2" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-tcnative-boringssl-static:2.0.35.Final" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-logging:4.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-srvutil:4.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shardingsphere:sharding-spring-boot-util:4.1.0" level="project" />
@@ -320,5 +308,31 @@
     <orderEntry type="library" name="Maven: org.apache.shardingsphere:sharding-core-execute:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shardingsphere:sharding-core-merge:4.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.shardingsphere:encrypt-core-merge:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:29.0-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:2.11.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.30" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba.otter:canal.client:1.1.4" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.55.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.zookeeper:zookeeper:3.4.5" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.netty:netty:3.2.2.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.101tec:zkclient:0.10" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.58" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.2.12.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.2.12.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-client:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-common:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-acl:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-remoting:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-tcnative-boringssl-static:2.0.35.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-logging:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.rocketmq:rocketmq-srvutil:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: com.zendesk:mysql-binlog-connector-java:0.23.3" level="project" />
   </component>
 </module>

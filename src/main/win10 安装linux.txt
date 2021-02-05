@@ -35,6 +35,26 @@ https://www.cnblogs.com/ssxblog/p/11357126.html
 
 
 
+在Linux上装mysql8.0所遇到的坑,以及开启mysql自动启动
+https://blog.csdn.net/zzzgd_666/article/details/81455419
+
+###############     设置mysql自动启动。   ==================================
+deb http://archive.ubuntu.com/ubuntu/ trusty main universe restricted multiverse
+
+sudo apt-get install sysv-rc-conf
+sudo sysv-rc-conf
+
+操作： 用鼠标点击，也可以用键盘方向键定位，用空格键选择， “X”表示开启该服务。用Ctrl+N翻下一页，用Ctrl+P翻上一页，用 shift+ q 退出。
+也可以用命令：
+#
+注意：Ubuntu系统中服务的运行级别
+0        系统停机状态
+1        单用户或系统维护状态
+2~5      多用户状态
+6        重新启动
+###  ==================================
+
+
 sudo apt-get update
 sudo apt-get upgrade
 
@@ -44,14 +64,13 @@ sudo apt-get upgrade
 即可返回指令界面。
 
 
-########################
+############   Java  ########################
 访问win10中的文件夹：
 cd  /mnt/d/
 
 
-
 apt-cache search openjdk
-apt-get install openjdk-8
+apt-get install openjdk-8-jdk
 5.安装成功后，还需要配置java_home变量：
 
 1)输入命令：echo $java_home
@@ -66,79 +85,134 @@ apt-get install openjdk-8
 
 
 
-
-
 ###################################win10 Ubuntu中 安装及 配置mysql
 apt-cache search mysql-server
+sudo apt-get install mysql-server
 如果win10中安装了，需要先关掉mysql服务！
 https://blog.csdn.net/weixin_43530726/article/details/91303898
-https://blog.csdn.net/weixin_39345384/article/details/80860060
-https://blog.csdn.net/weixin_33828101/article/details/89699230
+        wsl，win10子系统Ubuntu，安装mysql过程及坑
 
+1. 登陆数据库，创建用于远程连接的用户
+GRANT ALL PRIVILEGES ON *.* TO '自定义username'@'%' IDENTIFIED BY '自定义password';
+    注：%表示所有的电脑都可以连接，也可以设置某个ip地址运行连接。
+FLUSH PRIVILEGES; 刷新设置
+
+2. 退出数据库，修改MySQL的配置文件
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+找到 bind-address = 127.0.0.1 并注释掉 → # bind-address = 127.0.0.1
+注： 其他 Linux系统，配置文件可能在/etc/mysql/my.cnf
+
+4. 重新启动MySQL，使配置生效
+sudo service mysql restart
+
+5. 配置Ubuntu的防火墙
+打开3306端口：sudo ufw allow 3306
+开启防火墙：sudo ufw enable
+设置默认的防火墙防御：sudo ufw default deny
+查看防火墙的状态：sudo ufw status
+
+6. 获取Ubuntu所在主机的IP地址
+ifconfig即可查看（获取inet对应的地址，根据自身网络情况查看）
+
+
+######
+在Ubuntu下执行
+==>  hostname   mysql连接的配置就可以每次不用使用ip来访问了
+！！！！！！！！！！！
+
+
+
+mysql 启动失败：su: warning: cannot change directory to /nonexistent: No such file or directory
+这种错误一般是 mysql 服务器异常关机导致的，解决方案如下：
+
+# Ubuntu
+sudo service mysql stop
+sudo usermod -d /var/lib/mysql/ mysql
+sudo service mysql start
+
+# CentOS
+sudo systemctl stop mysql.service
+sudo usermod -d /var/lib/mysql/ mysql
+sudo systemctl start mysql.service
+
+
+================================================
 which mysqld
-
-
 创建/var/run/mysqld目录后，运行了下面两条语句
 chown -R mysql /var/run/mysqld
 chgrp -R mysql /var/run/mysqld
 然后就可以启动mysql了。
+=================================================
 
-/usr/bin                      客户端程序和mysql_install_db
-/var/lib/mysql            数据库和日志文件
-/var/run/mysqld        服务器
-/etc/mysql               配置文件my.cnf
-/usr/share/mysql       字符集，基准程序和错误消息
-/etc/init.d/mysql        启动mysql服务器
+#启动mysql需要密码：
+#sudo passwd -d mysql
 
+mysql -u root -p
+mysql -u debian-sys-maint -p
 
-sudo vim  /etc/mysql/mysql.conf.d/mysqld.cnf
-sudo usermod -d /var/lib/mysql/ mysql
-
-tail - 100f  /var/log/mysql/error.log
-sudo mkdir -p /var/run/mysqld/
-sudo chown -R mysql:mysql /var/run/mysqld/
-
-
-
-=====>>>>  binlog的位置：
-log_bin                 = /var/log/mysql/mysql-bin.log
-
-
-https://www.cnblogs.com/it-tsz/p/10206008.html
+    mysql 默认的用户    https://www.cnblogs.com/it-tsz/p/10206008.html
 sudo vim  /etc/mysql/debian.cnf
 [client]
 host     = localhost
 user     = debian-sys-maint
-password = kAwCltw07AYKKotF
+password = 2VZX7Uh2l0XLv7EL
 socket   = /var/run/mysqld/mysqld.sock
 [mysql_upgrade]
 host     = localhost
 user     = debian-sys-maint
-password = kAwCltw07AYKKotF
+password = 2VZX7Uh2l0XLv7EL
 socket   = /var/run/mysqld/mysqld.sock
 
-
-
-启动mysql需要密码：
-sudo passwd -d mysql
-
-mysql -u root -p
-
-GRANT ALL PRIVILEGES ON *.* TO 'bkjk'@'%' IDENTIFIED BY 'test@123';
-
-mysql  5.8 :
+        坑: https://blog.csdn.net/weixin_43530726/article/details/91303898
 use mysql;
-select user, host from user;
-update user set host = '%' where user = 'root';
+select user, host, plugin from user;
+#update user set host = '%' where user = 'root';
+#update user set authentication_string=password("20210112") where user="root";
+ update user set authentication_string=password("20210112"), plugin='mysql_native_password', host = '%' where user='root';
+flush privileges;
 
-GRANT ALL ON *.* TO 'root'@'%';
+
+CREATE USER 'bkjk'@'%' IDENTIFIED BY '20210112';
+
+#GRANT ALL ON *.* TO 'root'@'%';
+#权限太大  GRANT ALL PRIVILEGES ON *.* TO 'bkjk'@'%' IDENTIFIED BY '20210112';
+
+use mysql;
+select user,host from user;
+delete from user where user='bkjk';
+flush privileges;
+CREATE USER 'bkjk'@'%' IDENTIFIED BY '20210112';
+
+## Repl_client_priv 和 Repl_slave_priv 权限用于binlog， Show_view_priv 和 Show_db_priv用于查询建表sql 和 列信息
+update mysql.user set Repl_client_priv='Y', Repl_slave_priv='Y',
+    Show_view_priv = 'Y', Show_db_priv = 'Y',
+    Create_priv = 'Y', Index_priv = 'Y', Alter_priv = 'Y'
+    Select_priv = 'Y', Update_priv = 'Y', 'Insert_priv' = 'Y'
+where user = 'bkjk' and host = '%';
+flush privileges;
+
+
+
+
 flush privileges;
 
 #grant all privileges on *.* to 'root'@'%' ;
 ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '20210112';
 
 
+==========> 修改配置
+/usr/bin                      客户端程序和mysql_install_db
+/var/lib/mysql                数据库和日志文件
+/var/run/mysqld           服务器
+/etc/mysql                配置文件my.cnf
+/usr/share/mysql          字符集，基准程序和错误消息
+/etc/init.d/mysql         启动mysql服务器
+
+
+sudo vim  /etc/mysql/mysql.conf.d/mysqld.cnf
+
 [mysqld]
+    # 注释掉 bind-address
 # 打开binlog
 log-bin=mysql-bin
 
@@ -155,6 +229,18 @@ gtid_mode = ON
 enforce_gtid_consistency = ON
 
 重启。。
+sudo service mysql restart
+
+
+sudo usermod -d /var/lib/mysql/ mysql
+
+tail - 100f  /var/log/mysql/error.log
+sudo mkdir -p /var/run/mysqld/
+sudo chown -R mysql:mysql /var/run/mysqld/
+
+
+=====>>>>  binlog的位置：
+log_bin                 = /var/log/mysql/mysql-bin.log
 
 
 修改字符集！！！
@@ -166,7 +252,7 @@ ALTER DATABASE test CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 test
 
-
+show databases;
 SHOW GRANTS;
 show variables like '%gtid%';
 
@@ -180,7 +266,6 @@ show binary logs;
 
 
 
-
 打开3306端口：sudo ufw allow 13306							防火墙
 开启防火墙：sudo ufw enable
 设置默认的防火墙防御：sudo ufw default deny
@@ -189,6 +274,29 @@ show binary logs;
 10.242.0.155
 sudo service mysql stop
 sudo service mysql start
+
+
+
+
+
+
+Canal 环境
+####################################################
+https://www.cnblogs.com/51python/archive/2004/01/13/10855907.html
+
+访问win10中的文件夹：
+cd  /mnt/d/
+ sudo cp -r  canal-1.1.4/canal.deployer-1.1.4 /usr/local/
+
+sudo ufw allow 11111
+sudo vim /conf/example/instance.properties
+
+canal 配置文件修改， 最后换行加上pause，方便定位问题。
+rem -Dlogback.configurationFile="%logback_configurationFile%"
+
+ /var/log/mysql/mysql-bin.log
+ tar -zxvf canal.deployer-1.1.4.tar.gz -C /usr/local
+
 
 
 
@@ -239,14 +347,3 @@ sudo ufw allow 6379
 
 设置开机自动启动，关机自动关闭
 update-rc.d redis-server defaults
-
-
-
-####################################################
-canal 配置文件修改， 最后换行加上pause，方便定位问题。
-rem -Dlogback.configurationFile="%logback_configurationFile%"
-
- /var/log/mysql/mysql-bin.log
- tar -zxvf canal.deployer-1.1.4.tar.gz -C /usr/local
-
-
