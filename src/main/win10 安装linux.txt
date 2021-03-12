@@ -347,3 +347,42 @@ sudo ufw allow 6379
 
 设置开机自动启动，关机自动关闭
 update-rc.d redis-server defaults
+
+sudo apt-get update
+sudo apt-cache search libdbi-perl
+sudo apt-get install libdbi-perl
+sudo apt --fix-broken install
+
+libdbi-perl (>= 1.13)
+ sudo dpkg -i percona-toolkit_3.3.0-1.focal_amd64.deb
+
+ https://blog.csdn.net/g950904/article/details/108822529
+
+增加一列
+pt-online-schema-change h=qing,P=13306,u=root,p=20210112,D=wysiwyg,t=feature_user \
+--alter "ADD COLUMN age3 int(4) default 0" --print --execute --no-check-alter
+
+
+pt-online-schema-change \
+--host=qing \
+--port=13306 \
+--user=root \
+--password=20210112 \
+--charset=utf8mb4 \
+--alter "ADD COLUMN age1 int(4) default 0" \
+D=wysiwyg \
+t=test \
+--print \
+--execute \
+--no-check-alter
+
+
+--max-lag=10 \
+--check-interval=2 \
+--recursion-method="hosts" \
+--dry-run
+
+
+
+
+
