@@ -1,0 +1,30 @@
+docker start redis
+
+docker run --rm --name plutus-test -d -p 5000:8080 -it \
+-v /Users/qingqing/Downloads/project_php/plutus:/code \
+-v /Users/qingqing/Downloads/project_php/plutus/logs:/data0/www \
+-v /Users/qingqing/Downloads/project_php/plutus/php-override.ini:/usr/local/matrix/lib/php.d/php-override.ini \
+-v /Users/qingqing/Downloads/project_php/agent.conf:/usr/local/matrix/qconf/conf/agent.conf \
+--link redis:redis \
+registry.ke.com/docker-sre-local/cloud/sre-lnmp:20200605
+
+
+以root进入容器  ==》  sudo docker exec -it -u root  /bin/bash
+"sudo docker exec -it -u root e45306d29d4aef7e2c46799e48f6636636fcb27c29b3186343f66a86eed7a0db /bin/bash"
+
+==>删除启动失败的镜像：  docker rm xxx
+
+
+sudo grep -rn "lianjia.environment" *
+
+* : 表示当前目录所有文件，也可以是某个文件名
+-r 是递归查找
+-n 是显示行号
+-R 查找所有文件包含子目录
+-i 忽略大小写
+
+
+
+
+
+
