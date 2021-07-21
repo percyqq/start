@@ -17,7 +17,6 @@ public class 详情去重之增删改 {
 
     public static void main(String[] args) {
 
-
         List<AttachmentDetail> dbDetails = new ArrayList<>();
         //dbDetails = attachmentMapper.selectByExaminationId(examinationId);
         // db数据 L2 , L3, L5, L6
