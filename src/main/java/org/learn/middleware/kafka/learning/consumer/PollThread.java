@@ -27,6 +27,9 @@ public class PollThread implements Runnable {
 
     /**
      * 本文主要是演示，故这里为了方便，就在这里创建
+     *
+     * poll 线程
+     * 该线程内部会持有一个KafkaConsumer对象，会循环调用KafkaConsumer的poll方法，尝试获取消息，然后提交到消费线程池中并发消费。
      */
     public PollThread() {
         Properties props = new Properties();
