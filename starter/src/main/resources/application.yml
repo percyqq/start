@@ -1,0 +1,146 @@
+server:
+  port: 3603
+  servlet:
+    context-path: /start
+    contextPath: /start1
+
+#### log4j ####
+logging:
+  config: classpath:log4j2.xml
+  level:
+    org.learn: DEBUG
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/**/*.xml,classpath*:sql*Mapper/*Dao.xml
+  configuration:
+    mapUnderscoreToCamelCase: true
+
+eureka:
+  client:
+    enabled: false
+    registerWithEureka: false   #false 表示不向注册中心中注册自己
+    fetch-registry: false
+    fetchRegistry: false
+    registryFetchIntervalSeconds : 30
+  instance:
+    hostname: local002   #eureka 服务端实例名称
+
+
+spring:
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      batch-size:
+      retries:
+  mvc:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    format:
+      date: 'yyyy-MM-dd HH:mm:ss'
+  jackson:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    time-zone: 'GMT+8'
+
+  ## 分表配置
+  shardingsphere:
+    props:
+      sql:
+        show: true
+      check:
+        table:
+          metadata:
+            enabled: false
+      max:
+        connections:
+          size:
+            per:
+              query: 20
+    datasource:
+      names: master,slave
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        connectionTestQuery: SELECT 1
+        connectionTimeout: 30000
+        idleTimeout: 30000
+        maxLifetime: 1800000
+        maximumPoolSize: 100
+        minimumIdle: 5
+        poolName: scm-wms-sharding-master
+        driverClass: com.mysql.jdbc.Driver
+
+        jdbcUrl: jdbc:mysql://localhost:3306/learn?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+        username: root
+        password: 20210112
+
+        maxActive: 100
+        minIdle: 3
+        initialSize: 1
+        maxPoolPreparedStatementPerConnectionSize: 100
+        maxWait:  30000
+        minEvictableIdleTimeMillis: 300000
+        poolPreparedStatements: true
+        testOnBorrow: true
+        testOnReturn: false
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: 7000
+        validationQuery: 'select 1'
+        validationQueryTimeout: 16
+      slave:
+        type: com.zaxxer.hikari.HikariDataSource
+        connectionTestQuery: SELECT 1
+        connectionTimeout: 30000
+        idleTimeout: 30000
+        maxLifetime: 1800000
+        maximumPoolSize: 100
+        minimumIdle: 5
+        poolName: scm-wms-sharding-slave
+        driverClass: com.mysql.jdbc.Driver
+
+        jdbcUrl:  jdbc:mysql://localhost:3306/learn1?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+        username: root
+        password: 20210112
+
+        maxActive: 100
+        minIdle: 3
+        initialSize: 1
+        maxPoolPreparedStatementPerConnectionSize: 100
+        maxWait: 30000
+        minEvictableIdleTimeMillis: 300000
+        poolPreparedStatements: true
+
+        # 用于检测closed 的连接
+        testOnBorrow: true
+        testOnReturn: false
+        testWhileIdle: true
+        timeBetweenEvictionRunsMillis: 7000
+        validationQuery: 'select 1'
+        validationQueryTimeout: 16
+    #    masterslave:
+    #      name: ds_ms_default
+    #      master-data-source-name:  master
+    #      slave-data-source-names: slave
+    sharding:
+      master-slave-rules:
+        ds_ms_sharding:
+          master-data-source-name: master
+          slave-data-source-names: slave
+      #      default-dataSource-name: ds_ms_default
+      tables:
+        scm_cc_task:
+          actual-data-nodes: ds_ms_sharding.scm_cc_task_$->{0..7}
+          #          key-generator:
+          #            column: brand_id
+          #            type: SNOWFLAKE
+          table-strategy:
+            standard:
+              sharding-column: brand_id
+              precise-algorithm-class-name: org.learn.config.db2.MyCustomerShardingAlgorithm
+        scm_cc_task_detail:
+          actual-data-nodes: ds_ms_sharding.scm_cc_task_detail_$->{0..31}
+          #          key-generator:
+          #            column: brand_id
+          #            type: SNOWFLAKE
+          table-strategy:
+            standard:
+              sharding-column: brand_id
+              precise-algorithm-class-name: org.learn.config.db2.MyCustomerShardingAlgorithm

@@ -1,0 +1,95 @@
+server:
+  port: 36614
+  servlet:
+    context-path: /
+  use-forward-headers: true
+  tomcat:
+    remoteIpHeader: X-FORWARDED-FOR
+    protocolHeader: X-Forwarded-Proto
+    portHeader: X-Forwarded-Port
+    maxSwallowSize: 100MB
+
+#### log4j ####
+logging:
+  config: classpath:log4j2.xml
+  level:
+    com.xxx.scm: DEBUG
+    org.springframework.security.cas: DEBUG
+    org.jasig.cas.client: DEBUG
+    org.springframework.cloud.netflix.zuul: DEBUG
+
+info:
+  Author: supply
+  Description: this is scmo gateway service
+
+spring:
+  mvc:
+    dateFormat: 'yyyy-MM-dd HH:mm:ss'
+  jackson:
+    dateFormat: 'yyyy-MM-dd HH:mm:ss'
+    timeZone: 'GMT+8'
+  http:
+    converters:
+      preferred-json-mapper: gson
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
+
+zuul:
+  FormBodyWrapperFilter:
+    pre:
+      disable: true
+
+
+  ignoredServices: '*'
+  sensitiveHeaders:
+  addHostHeader: true
+  routes:
+    local-cas:
+      path: /login/**
+      url: forward:/login
+    local-sso:
+      path: /sso/**
+      url: forward:/sso
+    scm-cm-public:
+      path: /scm-cm-public/**
+      stripPrefix: false
+    scm-wms:
+      path: /scm-wms/**
+      stripPrefix: false
+    scm-weigh:
+      path: /scm-weigh/**
+      stripPrefix: false
+    scm-skus:
+      path: /scm-skus/**
+      stripPrefix: false
+    scm-product:
+      path: /scm-product/**
+      stripPrefix: false
+    scm-cm-operation-platform:
+      path: /scm-cm-operation-platform/**
+      stripPrefix: false
+  retryable: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 180000
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 180000
+  eureka:
+    enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    eurekaServiceUrlPollIntervalSeconds: 10

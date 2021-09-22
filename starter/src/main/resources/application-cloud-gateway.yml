@@ -1,0 +1,94 @@
+server:
+  port: 36613
+  servlet:
+    context-path: /
+  use-forward-headers: true
+
+#### log4j ####
+logging:
+  config: classpath:log4j2.xml
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: 'OFF'
+
+info:
+  Author: supply
+  Description: this is scm moblie gateway service
+
+spring:
+  mvc:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+  jackson:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    time-zone: 'GMT+8'
+  http:
+    converters:
+      preferred-json-mapper: gson
+
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          handshakeTimeout: 10000
+          closeNotifyFlushTimeout: 3000
+      discovery:
+        locator:
+          enabled: false
+          lowerCaseServiceId: true
+      routes:
+        - id: scm-cm-public
+          uri: lb://scm-cm-public
+          predicates:
+            - Path=/scm-cm-public/**
+        - id: scm-weigh
+          uri: lb://scm-weigh
+          predicates:
+            - Path=/scm-weigh/**
+        - id: scm-wms
+          uri: lb://scm-wms
+          predicates:
+            - Path=/scm-wms/**
+        - id: scm-product
+          uri: lb://scm-product
+          predicates:
+            - Path=/scm-product/**
+        - id: scm-skus
+          uri: lb://scm-skus
+          predicates:
+            - Path=/scm-skus/**
+        - id: scm-api
+          uri: lb://scm-api #http://localhost:8990
+          predicates:
+            - Path=/scm_kry/**
+
+management:
+  endpoint:
+    gateway:
+      enabled: true # default value
+    web:
+      exposure:
+        include: '*' # 开放所有页面节点  默认只开启了health、info两个节点
+    conditions:
+      enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 180000
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 180000
+  eureka:
+    enabled: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    eurekaServiceUrlPollIntervalSeconds: 10

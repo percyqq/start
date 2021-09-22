@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.minos.discover.client.MinosEurekaClientConfiguration,\
+org.minos.discover.client.MinosEndpointConfiguration

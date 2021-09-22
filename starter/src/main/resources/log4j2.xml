@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <property name="FILE_NAME">scm-cm-gateway-pc</property>
+        <property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{red} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[Txid:%X{PtxId} SpanId:%X{PspanId}]}{yellow} %clr{[UID:%X{userId} ReqID:%X{reqId}]}{blue} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx</property>
+    </properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+        <Async name="AsyncAppender">
+            <AppenderRef ref="RollingRandomAccessFile"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <!--<logger name ="org.springframework.data.mongodb.core.MongoTemplate" level="DEBUG"/>-->
+        <!--<logger name =" org.apache.ibatis" level="DEBUG"/>-->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="AsyncAppender"/>-->
+        </Root>
+    </Loggers>
+</Configuration>
