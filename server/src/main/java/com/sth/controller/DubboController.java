@@ -1,4 +1,4 @@
-package sth.controller;
+package com.sth.controller;
 
 
 import com.sth.dubbo.DemoService;

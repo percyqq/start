@@ -7,6 +7,7 @@
         <module>server</module>
         <module>starter</module>
         <module>api</module>
+        <module>client</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -1,37 +1,31 @@
-package sth;
-
+package com;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 
 /***
- *  dubbo 2.7.x 系列
- *  使用jdk8，
- *  zk使用3.4.x
- *
  */
 @Slf4j
 @SpringBootApplication(
         exclude = {DataSourceAutoConfiguration.class,}
 )
-//@ImportResource({"classpath:dubbo/*.xml"})
-@EnableDubboConfig
-@EnableDubbo(scanBasePackages = "sth.dubbo.service")
-public class Application implements CommandLineRunner, EnvironmentAware {
+@EnableDubbo
+public class ClientApplication implements CommandLineRunner, EnvironmentAware {
 
     private Environment environment;
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(ClientApplication.class, args);
     }
 
 
@@ -39,6 +33,16 @@ public class Application implements CommandLineRunner, EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
+
+    @Configuration
+    @EnableDubbo(scanBasePackages = "com.sth.dubbo.service")
+    @PropertySource("classpath:/dubbo/dubbo-consumer.properties")
+    @ComponentScan(value = {"com.sth.dubbo.service"})
+    static class ConsumerConfiguration {
+
+    }
+
 
     @Override
     public void run(String... args) {

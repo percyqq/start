@@ -3,20 +3,24 @@ spring:
     servlet:
       path: /
 
-dubbo:
-  application:
-    qos:
-      port: 22222
-    name: ${spring.application.name}
-  config-center:
-    address: zookeeper://127.0.0.1:2181
-  registry:
-    id : registry2
-    address: zookeeper://127.0.0.1:2181?registry-type=service
-  protocol:
-    name: dubbo
-    port: 20881
-  scan:
-    base-packages: sth.dubbo.service
+#server:
+#  address: 10.117.175.90
+
+#dubbo:
+#  application:
+#    qos:
+#      port: 22222
+#    name: ${spring.application.name}
+#  config-center:
+#    address: zookeeper://${server.address}:2181
+#  registry:
+#    id : registry1
+#    address: zookeeper://${server.address}:2181?registry-type=service
+#  protocol:
+#    name: dubbo
+#    port: 20880
+    #host: ${server.address}
+  #scan:
+  #  base-packages: com.sth.dubbo,
 
 

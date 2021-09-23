@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.learn.web.dao.DishShop;
 import org.learn.web.dao.Dog;
 import org.learn.web.service.ServiceB;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,7 @@ public class AController {
 
     @Resource
     private ServiceB serviceB;
+
 
     private static int id = 0;
     private static Random random = new Random();
