@@ -1,0 +1,12 @@
+mac zk 安装
+
+
+1、在命令行输入brew install zookeeper
+
+2、zk安装完成，使用默认配置文件：/usr/local/etc/zookeeper/zoo.cfg
+
+3、启动zk：zkServer start
+
+
+ps -ef|grep zookeeper
+可以看到配置文件
