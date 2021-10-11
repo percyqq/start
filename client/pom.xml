@@ -14,6 +14,8 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
+        <dubbo.version>3.0.2.1</dubbo.version>
     </properties>
 
     <dependencies>
@@ -39,18 +41,27 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-
+        <!-- 默认会是服务的配置
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>2.7.13</version>
+            <version>${dubbo.version}</version>
         </dependency>
+        -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
+
+
 
 
         <dependency>
             <artifactId>zookeeper</artifactId>
             <groupId>org.apache.zookeeper</groupId>
-            <version>3.4.13</version>
+            <version>3.6.3</version>
+            <!--<version>3.4.13</version>-->
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
@@ -70,6 +81,7 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-x-discovery</artifactId>
         </dependency>
+
 
     </dependencies>
 

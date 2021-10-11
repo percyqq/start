@@ -7,8 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
@@ -19,7 +17,8 @@ import org.springframework.core.env.Environment;
 @SpringBootApplication(
         exclude = {DataSourceAutoConfiguration.class,}
 )
-@EnableDubbo
+@EnableDubbo(scanBasePackages = "com.sth.dubbo.service")
+@PropertySource("classpath:/dubbo/dubbo-consumer.properties")
 public class ClientApplication implements CommandLineRunner, EnvironmentAware {
 
     private Environment environment;
@@ -33,16 +32,6 @@ public class ClientApplication implements CommandLineRunner, EnvironmentAware {
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
-
-
-    @Configuration
-    @EnableDubbo(scanBasePackages = "com.sth.dubbo.service")
-    @PropertySource("classpath:/dubbo/dubbo-consumer.properties")
-    @ComponentScan(value = {"com.sth.dubbo.service"})
-    static class ConsumerConfiguration {
-
-    }
-
 
     @Override
     public void run(String... args) {

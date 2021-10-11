@@ -2,14 +2,13 @@ package com.sth;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -30,31 +29,27 @@ public class ServerApplication implements CommandLineRunner, EnvironmentAware {
 
     private Environment environment;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SpringApplication.run(ServerApplication.class, args);
     }
-
 
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
 
-
     @Configuration
     @EnableDubbo(scanBasePackages = {"com.sth.dubbo"}) // @DubboService 实现类 位置
     @PropertySource("classpath:/dubbo/dubbo-provider.properties")
     static class ProviderConfiguration {
-        @Bean
-        public RegistryConfig registryConfig() {
-            RegistryConfig registryConfig = new RegistryConfig();
-            //registryConfig.setId("registry1");
-            registryConfig.setAddress("zookeeper://127.0.0.1:2181");
-            return registryConfig;
-        }
+//        @Bean
+//        public RegistryConfig registryConfig() {
+//            RegistryConfig registryConfig = new RegistryConfig();
+//            registryConfig.setId("registry");
+//            registryConfig.setAddress("zookeeper://127.0.0.1:2181");
+//            return registryConfig;
+//        }
     }
-
-
 
 
     @Override

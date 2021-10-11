@@ -1,26 +1,32 @@
+
+server:
+  address: 127.0.0.1
+
+
 spring:
+  application:
+    name: server
   mvc:
     servlet:
       path: /
 
-#server:
-#  address: 10.117.175.90
-
-#dubbo:
-#  application:
-#    qos:
-#      port: 22222
+dubbo:
+  application:
+    qos-enable: true
+    #qos-port: 22223
 #    name: ${spring.application.name}
 #  config-center:
-#    address: zookeeper://${server.address}:2181
+#    address: zookeeper://127.0.0.1:2181
 #  registry:
 #    id : registry1
-#    address: zookeeper://${server.address}:2181?registry-type=service
+    #address: zookeeper://127.0.0.1:2181?registry-type=service
+#    address: zookeeper://localhost:2181
+#    protocol: zookeeper
 #  protocol:
 #    name: dubbo
 #    port: 20880
-    #host: ${server.address}
-  #scan:
-  #  base-packages: com.sth.dubbo,
+#    host: 127.0.0.1
+#  scan:
+#    base-packages: com.sth.dubbo,
 
 
