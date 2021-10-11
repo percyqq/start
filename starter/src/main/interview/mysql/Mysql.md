@@ -2,9 +2,25 @@
 	索引。回表，匹配
 	mvcc，间隙锁，幻读解决。
 	主从同步，当前读，一致性读。
-	
-	
-	
+
+
+dexplain
+    SELECT * FROM tasks
+    where sub_trade_product = '10002003'
+    limit 5000, 20;
+
+explain
+    SELECT * FROM tasks where id in(
+        SELECT id FROM (
+            SELECT id FROM tasks
+            where sub_trade_product = '10002003'
+            limit 5000, 20
+        ) t
+    )
+
+
+
+
 你能说说为什么B+树相对于B树在查询上会更加优胜吗？
 除了上面这个范围查询的，你还能说出其他的一些区别吗？
 刚刚我们聊到B+ Tree，那你知道B+Tree的叶子节点都可以存哪些东西吗？

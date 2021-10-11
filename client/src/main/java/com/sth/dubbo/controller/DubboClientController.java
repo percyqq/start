@@ -1,30 +1,27 @@
 package com.sth.dubbo.controller;
 
-import com.sth.dubbo.WtfService;
-import com.sth.dubbo.DemoService;
-import org.apache.dubbo.config.annotation.DubboReference;
+import com.sth.dubbo.service.DubboRefDemoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
 public class DubboClientController {
 
-    @DubboReference(validation = "1.0.0")
-    private DemoService demoService;
+    @Autowired
+    private DubboRefDemoService dubboRefDemoService;
 
+    @GetMapping("/s1")
+    public @ResponseBody String de(@RequestParam String name) {
+        return dubboRefDemoService.sayHello(name);
+    }
 
-    @DubboReference(validation = "1.0.0")
-    private WtfService wtfService;
-
-    @GetMapping("/test")
-    public String de(@RequestParam String name) {
-        String ret = wtfService.gfw(name);
-
-        System.out.println(" =====>>>> " + ret);
-
-        return demoService.sayHello(name);
+    @GetMapping("/s2")
+    public @ResponseBody String wd(@RequestParam String name) {
+        return dubboRefDemoService.gfw(name);
     }
 
 
