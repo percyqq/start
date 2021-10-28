@@ -1,0 +1,31 @@
+
+Redis cluster 的搭建，分布式锁的实验
+win10安装的ubuntu里面：
+sudo apt-get purge --auto-remove redis-server
+
+From the official Ubuntu PPA
+You can install the latest stable version of Redis from the redislabs/redis package repository. Add the repository to the apt index,
+update it and install:
+
+
+
+$ sudo add-apt-repository ppa:redislabs/redis
+$ sudo apt-get update
+查看有哪些版本
+$ apt-cache madison redis-server
+$ sudo apt-get install redis
+
+
+报错：WARNING overcommit_memory is set to 0! Background save may fail under low memory condition.
+    To fix this issue add ‘vm.overcommit_memory = 1’ to /etc/sysctl.conf and then reboot or
+    run the command ‘sysctl vm.overcommit_memory=1’ for this to take effect.
+
+
+sudo cd为什么不能够执行             https://blog.csdn.net/u014717036/article/details/70338463
+使用sudo -i命令提升用户权限           sudo -i
+
+
+dubbo
+
+netty
+
