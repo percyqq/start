@@ -1,5 +1,5 @@
 浅谈Redis中的Rehash机制       渐进式哈希(rehashing)  
- https://blog.csdn.net/cqk0100/article/details/80400811 
+https://blog.csdn.net/cqk0100/article/details/80400811 
  
  
  cluster下的同步协议，Hash slot，一致性hash。

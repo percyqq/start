@@ -3,6 +3,8 @@ package com.sth.dubbo;
 
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.AnnotationAsyncExecutionInterceptor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("demoService") // 用于dubbo:server 的ref 参数
@@ -18,6 +20,8 @@ public class WtfServiceImpl implements WtfService {
     private String serviceName;
 
 
+    AnnotationAsyncExecutionInterceptor f;
+    @Async
     @Override
     public String gfw(String sth) {
         return String.format("[%s] ==>  WtfService : Hello, %s", serviceName, sth);

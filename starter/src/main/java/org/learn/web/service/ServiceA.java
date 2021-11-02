@@ -2,6 +2,8 @@ package org.learn.web.service;
 
 import org.learn.web.dao.Dog;
 import org.learn.web.dao.DogDAO;
+import org.springframework.scheduling.annotation.AnnotationAsyncExecutionInterceptor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,8 @@ public class ServiceA {
         return dogDAO.selectByPrimaryKey(id);
     }
 
+    AnnotationAsyncExecutionInterceptor f;
+    @Async
     @Transactional
     public int update(Dog dog) throws Exception {
         int update = dogDAO.updateByPrimaryKeySelective(dog);

@@ -36,6 +36,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.zendesk/mysql-binlog-connector-java -->
+            <dependency>
+                <groupId>com.zendesk</groupId>
+                <artifactId>mysql-binlog-connector-java</artifactId>
+                <version>0.25.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -219,12 +227,19 @@
 			<version>1.7.30</version>
 		</dependency>
 
-
+<!--
 		<dependency>
 			<groupId>org.apache.shardingsphere</groupId>
 			<artifactId>sharding-jdbc-spring-boot-starter</artifactId>
 			<version>4.1.0</version>
 		</dependency>
+-->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
 
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -246,17 +261,12 @@
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-core</artifactId>
 				</exclusion>
-			</exclusions>
+                <exclusion>
+                    <artifactId>commons-lang3</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+            </exclusions>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.zendesk/mysql-binlog-connector-java -->
-		<dependency>
-			<groupId>com.zendesk</groupId>
-			<artifactId>mysql-binlog-connector-java</artifactId>
-			<version>0.25.0</version>
-		</dependency>
-
-
 
     </dependencies>
 

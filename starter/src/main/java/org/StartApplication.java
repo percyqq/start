@@ -34,8 +34,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @MapperScan({"org.learn.**.dao", "org.learn.**.mapper"})
 @ServletComponentScan(basePackages = "org.learn")
 @EnableFeignClients( basePackages = {"org.learn"})
-
 @EnableRetry(proxyTargetClass = true)
+
+
+// docker run -itd -p6379:6379  --name redis  redis
+//      mysql -u root -p        show databases;     use mysql;
+//      select * from mysql.user;   这里面控制了权限和密码
 public class StartApplication implements CommandLineRunner, EnvironmentAware, ApplicationContextAware {
 
     private Environment environment;

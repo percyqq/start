@@ -2,6 +2,7 @@ package com.sth;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,9 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 
 /***
@@ -24,6 +27,8 @@ import org.springframework.core.env.Environment;
 @SpringBootApplication(
         exclude = {DataSourceAutoConfiguration.class,}
 )
+
+@EnableAsync
 //@ImportResource({"classpath:dubbo/*.xml"})
 public class ServerApplication implements CommandLineRunner, EnvironmentAware {
 
@@ -38,17 +43,18 @@ public class ServerApplication implements CommandLineRunner, EnvironmentAware {
         this.environment = environment;
     }
 
-    @Configuration
+    //@Configuration
     @EnableDubbo(scanBasePackages = {"com.sth.dubbo"}) // @DubboService 实现类 位置
-    @PropertySource("classpath:/dubbo/dubbo-provider.properties")
+    //@PropertySource("classpath:/dubbo/dubbo-provider.properties")
     static class ProviderConfiguration {
-//        @Bean
-//        public RegistryConfig registryConfig() {
-//            RegistryConfig registryConfig = new RegistryConfig();
-//            registryConfig.setId("registry");
-//            registryConfig.setAddress("zookeeper://127.0.0.1:2181");
-//            return registryConfig;
-//        }
+        @Bean
+        public RegistryConfig registryConfig() {
+            RegistryConfig registryConfig = new RegistryConfig();
+            registryConfig.setId("registry");
+            registryConfig.setAddress("zookeeper://127.0.0.1:2181");
+            registryConfig.setProtocol("zookeeper");
+            return registryConfig;
+        }
     }
 
 

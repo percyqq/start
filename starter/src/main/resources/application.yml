@@ -5,10 +5,11 @@ server:
     contextPath: /start1
 
 #### log4j ####
-#logging:
-  #config: classpath:log4j2.xml
-  #level:
-  #  org.learn: DEBUG
+logging:
+  #config: classpath:log4j.properties
+  config: classpath:log4j2.xml
+  level:
+    org.learn: DEBUG
 
 
 mybatis:

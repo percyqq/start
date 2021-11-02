@@ -3,7 +3,10 @@
     <Properties>
         <property name="LOG_HOME">logs</property>
         <property name="FILE_NAME">start-pc</property>
-        <property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{red} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[Txid:%X{PtxId} SpanId:%X{PspanId}]}{yellow} %clr{[UID:%X{userId} ReqID:%X{reqId}]}{blue} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx</property>
+        <!--
+        <property name="LOG_PATTERN">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{red} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{-&#45;&#45;}{faint} %clr{[Txid:%X{PtxId} SpanId:%X{PspanId}]}{yellow} %clr{[UID:%X{userId} ReqID:%X{reqId}]}{blue} %clr{-&#45;&#45;}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx</property>
+        -->
+        <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
     </Properties>
 
     <Appenders>
