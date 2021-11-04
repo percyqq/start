@@ -6,7 +6,7 @@ docker run --rm --name plutus-test -d -p 5000:8080 -it \
 -v /Users/qingqing/Downloads/project_php/plutus/php-override.ini:/usr/local/matrix/lib/php.d/php-override.ini \
 -v /Users/qingqing/Downloads/project_php/agent.conf:/usr/local/matrix/qconf/conf/agent.conf \
 --link redis:redis \
-registry.ke.com/docker-sre-local/cloud/sre-lnmp:20200605
+registry.xx.com/docker-sre/cloud/sre-lnmp:20200605
 
 
 以root进入容器  ==》  sudo docker exec -it -u root  /bin/bash
@@ -15,7 +15,7 @@ registry.ke.com/docker-sre-local/cloud/sre-lnmp:20200605
 ==>删除启动失败的镜像：  docker rm xxx
 
 
-sudo grep -rn "lianjia.environment" *
+sudo grep -rn "xxx.environment" *
 
 * : 表示当前目录所有文件，也可以是某个文件名
 -r 是递归查找
@@ -24,6 +24,18 @@ sudo grep -rn "lianjia.environment" *
 -i 忽略大小写
 
 
+
+
+使用brew uninstall git卸载软件只会卸载软件本身而不会同时卸载其依赖包，使用以下命令可完全卸载，并且不会影响到其他软件。
+    brew tap beeftornado/rmtree
+这一步更新时间可能比较长，请耐心等待。结束后执行如下命令即可完全卸载软件。
+    brew rmtree git
+    brew cleanup
+
+
+
+docker run --name nginx-test -p 8080:80 -d nginx
+sudo docker exec -it -u root    /bin/bash
 
 
 
