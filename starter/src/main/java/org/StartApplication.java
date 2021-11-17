@@ -1,6 +1,7 @@
 package org;
 
 import lombok.extern.slf4j.Slf4j;
+import org.learn.java.ConcurrentHashMapEmp;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
@@ -18,6 +19,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @EnableAsync
@@ -51,6 +54,8 @@ public class StartApplication implements CommandLineRunner, EnvironmentAware, Ap
 
     //org.redisson.Redisson redisson;
     DefaultSingletonBeanRegistry d;
+
+    ConcurrentHashMap dd;
 
     org.aspectj.lang.annotation.Pointcut f;
 
