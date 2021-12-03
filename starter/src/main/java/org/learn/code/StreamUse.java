@@ -40,14 +40,14 @@ public class StreamUse {
                 Collectors.groupingBy(U::getId, Collectors.mapping(U::getName, Collectors.toList()))
         );
 
+
         //分组同时还转换
+        List<U> users = l;
         Function<U, U1> function = u -> {
             U1 u1 = new U1();
             BeanUtils.copyProperties(u, u1);
             return u1;
         };
-
-        List<U> users = l;
         Map<Integer, List<U1>> userMap = users.stream().collect(
                 Collectors.groupingBy(U::getId, Collectors.mapping(function, Collectors.toList()))
         );
