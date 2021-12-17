@@ -10,6 +10,16 @@ public class 代码优化点评 {
 
     private static Map<String, String> 当前类的变量 = new HashMap<>();
 
+
+    //!
+    // EventGroup       ==> BinlogEventParser
+    // 将各类事件使用单独的 XX-Event类，调用对应的方法  onEvent（Event类）处理回调事件
+    // EventGroup  是一组完整的事件，比如DDL, DML ， 完整的一个事务等。
+//!
+
+
+
+
     public static void main(String[] args) {
         // 使用function函数 优化 BinlogTaskImpl 中的 callback
         //  BinlogEventParseCallback eventParseCallback = new AbstractBinlogEventParseCallbackImpl(taskInfo, tableOperate, targetBinlogRepository,
