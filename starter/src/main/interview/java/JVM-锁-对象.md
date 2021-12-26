@@ -1,5 +1,5 @@
 
-https://blog.csdn.net/zqz_zqz/article/details/70233767  
+https://blog.csdn.net/zqz_zqz/article/details/70233767
 java 中的锁 -- 偏向锁、轻量级锁、自旋锁、重量级锁  
 
    自旋等待的时间必须要有一定的限度，如果自旋超过了限定次数（默认是10次，可以使用-XX:PreBlockSpin来更改）没有成功获得锁，

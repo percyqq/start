@@ -16,7 +16,7 @@ public class 线程池 {
     //  线程池的关闭。
     public static void main(String[] args) {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 5, 60,
-                TimeUnit.SECONDS, new LinkedBlockingQueue<>(10));
+                 TimeUnit.SECONDS, new LinkedBlockingQueue<>(10));
 //        Future<String> future = executor.submit(() -> {
 //            System.out.println("135246");
 //            //FutureTask 里的 public void run() 方法
