@@ -22,6 +22,8 @@ public class StreamUse {
     }
 
     public static void main(String[] args) {
+        //intFlatOP();
+
         List<U> l = new ArrayList<>();
         l.add(new U(1, "2", "1"));
         l.add(new U(1, "2", "2"));
@@ -62,12 +64,30 @@ public class StreamUse {
         System.out.println(mmp);
     }
 
-
     @Data
     static class U1 {
         int id;
         String name;
         String desc;
+    }
+
+    private static void intFlatOP() {
+        String versionDate = "2021.122401";
+        List<int[]> ddd = Arrays.stream(versionDate.split("\\.")).map(str -> {
+            char[] ca = str.toCharArray();
+            int[] ints = new int[ca.length];
+            int index = 0;
+            for (char c : ca) {
+                ints[index++] = Character.getNumericValue(c);
+            }
+            return ints;
+        }).collect(Collectors.toList());
+
+        List<Integer> wtf = ddd.stream().flatMapToInt(integers -> Arrays.stream(integers)).boxed().collect(Collectors.toList());
+        System.out.println(wtf);
+
+        int[] dbl = ddd.stream().flatMapToInt(integers -> Arrays.stream(integers)).toArray();
+        for (int s : dbl) System.out.print(s);
     }
 
 
