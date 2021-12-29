@@ -53,35 +53,57 @@ public class 二叉树 {
 //        inOrderTraverseWithStack(treeNode);
         System.out.println();
         postOrderTraverse(treeNode);    //9  10  2  4  8  3
-        postOrderTraverseWithStack(treeNode);
+        postOrderTraverseWithStack1(treeNode);
     }
+
+    // 节点 - 右 - 左， 依次入栈
+    // stack : 3, 8, 4 , 4.2, 4, 4.1, 8, 8.1, 3, 2, 10
+    // head  : 3                                 10,
+    private static void postOrderTraverseWithStack1(TreeNode treeNode) {
+        System.out.println();
+        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> head = new Stack<>();//存头节点的
+        while (treeNode != null || !stack.isEmpty()) {
+            while (treeNode != null) {
+                stack.push(treeNode);
+                head.push(treeNode);
+                treeNode = treeNode.rightChild;
+            }
+            if (!stack.isEmpty()) {
+                treeNode = stack.pop();
+                treeNode = treeNode.leftChild;
+            }
+        }
+        while (!head.isEmpty()) {
+            treeNode = head.pop();
+            System.out.print(treeNode.data + "  ");
+        }
+    }
+
 
     //3 2 9 9.1  9 9.2  2 10 10.1 3 8 8.1 8
     //9  9
     //2     2
     //3     3
-    private static void postOrderTraverseWithStack(TreeNode treeNode) {
+    private static void postOrderTraverseWithStack2(TreeNode treeNode) {
         System.out.println();
+        LinkedList<Integer> linkedList = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
-        TreeNode lastVisit = null;
-        while (treeNode != null || !stack.isEmpty()) {
-            while (treeNode != null) {
-                stack.push(treeNode);
-                treeNode = treeNode.leftChild;
-            }
-            if (!stack.isEmpty()) {
-                treeNode = stack.pop();
-                TreeNode rightChild = treeNode.rightChild;
+        if (treeNode != null) {
+            stack.push(treeNode);
+        }
 
-                if (rightChild == null || rightChild == lastVisit) {
-                    System.out.print(treeNode.data + "  ");
-                    lastVisit = treeNode;
-                    treeNode = null;
-                } else {
-                    treeNode = treeNode.rightChild;
-                }
+        while (!stack.isEmpty()) {
+            TreeNode head = stack.pop();
+            linkedList.addFirst(head.data);
+            if (head.leftChild != null) {
+                stack.add(head.leftChild);
+            }
+            if (head.rightChild != null) {
+                stack.add(head.rightChild);
             }
         }
+        linkedList.stream().forEach(item -> System.out.println(item));
     }
 
 
@@ -116,6 +138,7 @@ public class 二叉树 {
             }
         }
     }
+
 
 
     // 前序

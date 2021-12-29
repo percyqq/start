@@ -38,9 +38,47 @@ https://segmentfault.com/a/1190000012650596
 RR 下的Read view 举例
 从上到下为时间线
 
+
+输入：     SHOW ENGINE INNODB STATUS;      查看最近一次死锁日志：
+set GLOBAL innodb_status_output_locks=ON;
+set GLOBAL innodb_status_output=ON;
+mysql的锁统计，这个线上不推荐打开打开的话日志会记录得比较多。
+
+[session 1]                                     [session 2]                                 [session 3]
+set autocommit=0;
+begin;  INSERT INTO `test` (`id`, `a`, `b`) VALUES (64, 64, 64) ON DUPLICATE KEY UPDATE a = 64, b= 64;
+begin;  INSERT INTO `test` (`id`, `a`, `b`) VALUES (65, 64, 64) ON DUPLICATE KEY UPDATE a = 64, b= 64;
+begin;  INSERT INTO `test` (`id`, `a`, `b`) VALUES (65, 63, 63) ON DUPLICATE KEY UPDATE a = 63, b= 63;
+SHOW ENGINE INNODB STATUS;
+
+CREATE TABLE `t2` (
+    `id` int NOT NULL,
+    `b` int DEFAULT NULL,
+PRIMARY KEY (`id`),
+KEY `index2` (`b`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `t3` (
+    `id` int NOT NULL,
+    `b` varchar(45) COLLATE utf8mb4_general_ci DEFAULT '',
+PRIMARY KEY (`id`),
+KEY `index2` (`b`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+////
+begin;  INSERT INTO `t2` (`id`, `b`) VALUES (64, 64) ON DUPLICATE KEY UPDATE b= 64;
+begin;  INSERT INTO `t2` (`id`, `b`) VALUES (65, 63) ON DUPLICATE KEY UPDATE b= 63;
+begin;  INSERT INTO `t2` (`id`, `b`) VALUES (65, 62) ON DUPLICATE KEY UPDATE b= 62;
+
+begin;  INSERT INTO `t3` (`id`, `b`) VALUES (1, '') ON DUPLICATE KEY UPDATE b= '';
+begin;  INSERT INTO `t3` (`id`, `b`) VALUES (3, '') ON DUPLICATE KEY UPDATE b= '';
+begin;  INSERT INTO `t3` (`id`, `b`) VALUES (3, '') ON DUPLICATE KEY UPDATE b= '';
+SHOW ENGINE INNODB STATUS;
+
+
 ps -ef|grep mysql 
-cd /                                        QQ900512
-./usr/local/mysql/bin/mysql -u root -p      
+cd /                                        
+./usr/local/mysql/bin/mysql -u root -p      20210112
 use learn;
 
 --> INSERT INTO `learn`.`dog` (`name`) VALUES ('柯基'); 
@@ -53,6 +91,128 @@ use learn;
 
 注意先设置 session[一][二]    set autocommit=0;
 select @@autocommit;
+
+
+
+#######################################################################################################################################
+各种加锁研究：
+https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&mid=2247497197&idx=1&sn=9f82f73d876636944fb75348ef568c01
+
+CREATE TABLE `test` (
+    `id` int NOT NULL,
+    `a` int DEFAULT NULL,
+    `b` int DEFAULT NULL,
+PRIMARY KEY (`id`),
+KEY `index_b` (`b`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+`test` table  data:
+id      a       b (index)
+0       0       0
+4       4       4
+8       8       8
+16      16      16
+32      32      32
+[注意字段不用用varchar！不用用varchar！不用用varchar！  varchar对数字的加锁就不是和数字那样预想的一样了    ] 
+
+
+[对记录加锁时，加锁的基本单位是 next-key lock，它是由记录锁和间隙锁组合而成的，
+    next-key lock 是前开后闭区间，而间隙锁是前开后开区间。]
+[但是，next-key lock 在一些场景下会退化成记录锁或间隙锁。]
+
+// 默认 autocommit 是1， 需要把session 1的设值为0
+============================================== 唯一索引等值查询 ==========================================================================
+[session 1]                                     [session 2]                                 [session 3]
+set autocommit=0;  select @@autocommit;  begin;
+SELECT * FROM test where id = 16 for update;
+                                                update test set a = 100 where id = 16;
+                                                //阻塞
+                                                                                            insert into test values(9, 9, 9);   //OK
+分析。 session 1: 
+    ① { 记录加锁的基本单位是 next-key lock，因此会话1的加锁范围是(8, 16] }
+    ② 但是由于是用唯一索引进行等值查询，且查询的记录存在，所以 next-key lock 退化成 [记录锁]，因此最终加锁的范围是 id = 16 这一行。
+所以，会话 2 在修改 id=16 的记录时会被锁住，而会话 3 插入 id=9 的记录可以被正常执行。
+
+接下来，看看记录不存在的情况。
+[session 1]                                     [session 2]                                 [session 3]
+set autocommit=0;  select @@autocommit;  begin;
+SELECT * FROM test where id = 10 for update;
+// 记录不存在   
+                                                insert into test values(9, 9, 9);
+                                                //阻塞
+                                                                                            update test set a = 100 where id = 16;  //OK
+分析。 session 1:
+    ① { 记录加锁的基本单位是 next-key lock，因此会话1的加锁范围是(8, 16] }
+    ② 但是由于查询记录不存在，next-key lock 退化成间隙锁，因此最终加锁的范围是 (8,16)。
+所以，session 2 要往这个间隙里面插入 id=9 的记录会被锁住，但是 session 3 修改 id =16 是可以正常执行的，因为 id = 16 这条记录并没有加锁。
+==> [有趣的是，如果记录9存在，session 2 会提示    Duplicate entry '9' for key 'test.PRIMARY'  ， 而不是锁住！！]
+============================================== 唯一索引等值查询 ===========================================================================
+
+********************************************** 唯一索引范围查询 ***************************************************************************
+[session 1]                     [session 2]                     [session 3]                     [session 4]
+set autocommit=0;  select @@autocommit;  begin;
+select * from test where id >= 8 and id < 9 for update;
+                                insert into test values(9, 9, 9);
+                                //阻塞
+                                                                update test set a = 100 where id = 8;
+                                                                //阻塞
+                                                                                                update test set a = 100 where id = 16;  //OK
+分析。 session 1:
+    ① 最开始要找的第一行是 id = 8，因此 next-key lock(4,8]， 但是由于 id 是唯一索引，且该记录是存在的，因此会退化成记录锁，也就是只会对 id = 8 这一行加锁；
+    ② 由于是范围查找，就会继续往后找存在的记录，也就是会找到 id = 16 这一行停下来，然后加 next-key lock (8, 16]，
+    但由于 id = 16 不满足 id < 9，所以会退化成间隙锁，加锁范围变为 (8, 16)。
+所以，会话 1 这时候 [主键索引]的锁是记录锁 id=8 和 [间隙锁(8, 16)]。
+     会话 2 由于往间隙锁里插入了 id = 9 的记录，所以会被锁住了，而 id = 8 是被加锁的，因此会话 3 的语句也会被阻塞。
+     由于 id = 16 并没有加锁，所以会话 4 是可以正常被执行。
+********************************************** 唯一索引范围查询 ***************************************************************************
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 非唯一索引等值查询 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+当我们用非唯一索引进行等值查询的时候，查询的记录存不存在，加锁的规则也会不同：
+    [当查询的记录存在时，除了会加 next-key lock 外，还额外加间隙锁，也就是会加两把锁。]
+    [当查询的记录不存在时，只会加 next-key lock，然后会退化为间隙锁，也就是只会加一把锁。]
+
+[session 1]             [session 2]             [session 3]             [session 4]             [session 5]
+set autocommit=0;  select @@autocommit;  
+begin;  SELECT id FROM test where b = 8 for update;
+                        insert into test values(9, 9, 9);
+                        //阻塞
+                                                insert into test values(5, 5, 5);
+                                                //阻塞
+                                                                        update test set a = 100 where b = 8;
+                                                                        //阻塞
+                                                                                                update test set a = 100 where b = 16;
+                                                                                                // OK
+分析。 session 1:
+    ① 先会对普通索引 b 加上 next-key lock，范围是(4,8];
+    ② 然后因为是非唯一索引，且查询的记录是存在的，所以还会加上间隙锁，规则是向下遍历到第一个不符合条件的值才能停止，因此间隙锁的范围是(8,16)。
+所以，会话1的普通索引 b 上共有两个锁，分别是 next-key lock (4,8] 和间隙锁 (8,16) 。
+那么，当会话 2 往间隙锁里插入 id = 9 的记录就会被锁住，而会话 3 和会话 4 是因为更改了 next-key lock 范围里的记录而被锁住的。
+然后因为 b = 16 这条记录没有加锁，所以会话 5 是可以正常执行的。
+
+[session 1]                         [session 2]                         [session 3]                    
+begin;  SELECT * FROM test where b = 9 for update;
+                                    insert into test values(10, 10, 10);
+                                    //阻塞
+                                                                        update test set a = 100 where b = 16; //OK
+输入：SHOW ENGINE INNODB STATUS;查看最近一次死锁日志：
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 非唯一索引等值查询 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 非唯一索引范围查询 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+[session 1]                     [session 2]                     [session 3]                     [session 4]
+begin;  SELECT * FROM test where b >= 8 and b < 9 for update;
+                                update test set a = 100 where b = 8;     
+                                //阻塞
+                                                                insert into test values(10, 10, 10);     
+                                                                //阻塞
+                                                                                                update test set a = 100 where b = 16;   
+                                                                                                //阻塞
+分析。 session 1:
+    ① 最开始要找的第一行是 b = 8，因此 next-key lock(4,8]，但是由于 b 不是唯一索引，并不会退化成记录锁。
+    ② 但是由于是范围查找，就会继续往后找存在的记录，也就是会找到 b = 16 这一行停下来，然后加 next-key lock (8, 16]，因为是普通索引查询，所以并不会退化成间隙锁。
+所以，会话 1 的普通索引 b 有两个 next-key lock，分别是 (4,8] 和(8, 16]。       全部锁住。
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 非唯一索引范围查询 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
 
 
 

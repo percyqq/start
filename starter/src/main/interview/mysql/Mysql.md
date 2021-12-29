@@ -278,8 +278,8 @@ https://www.jianshu.com/p/d75fcdeb07a3
     这些事务都不会释放共享锁而是一直等待对方释放，这样就造成了死锁。
     如果一个数据在修改前直接申请更新锁，在数据修改的时候再升级为排它锁，就可以避免死锁。
 
-
-https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097f882ff9d32f5cdf7922644d083&chksm=bd2d0d468a5a845026b7d2c211330a6bc7e9ebdaa92f8060265f60ca0b166f8957cbf3b0182c&scene=21#wechat_redirect
+4种事务的隔离级别，InnoDB如何巧妙实现:
+https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097f882ff9d32f5cdf7922644d083
 
 [快照读（Snapshot Read），这种一致性不加锁的读（Consistent Nonlocking Read），就是InnoDB并发如此之高的核心原因之一]
 #case
