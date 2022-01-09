@@ -48,15 +48,15 @@ public class 二叉树 {
 
         System.out.println("前序遍历");
         //preOrderTraverse(treeNode);
-//        preOrderTraverseWithStack(treeNode);
-//        inOrderTraverse(treeNode);
-//        inOrderTraverseWithStack(treeNode);
+        //preOrderTraverseWithStack(treeNode);
+        //inOrderTraverse(treeNode);
+        //inOrderTraverseWithStack(treeNode);
         System.out.println();
         postOrderTraverse(treeNode);    //9  10  2  4  8  3
         postOrderTraverseWithStack1(treeNode);
     }
 
-    // 节点 - 右 - 左， 依次入栈
+    // 后续。 节点 - 右 - 左， 依次入栈
     // stack : 3, 8, 4 , 4.2, 4, 4.1, 8, 8.1, 3, 2, 10
     // head  : 3                                 10,
     private static void postOrderTraverseWithStack1(TreeNode treeNode) {
@@ -106,7 +106,7 @@ public class 二叉树 {
         linkedList.stream().forEach(item -> System.out.println(item));
     }
 
-
+    //前序： 根在前。 3  2  9  10  8  4
     private static void preOrderTraverseWithStack(TreeNode treeNode) {
         System.out.println();
         Stack<TreeNode> stack = new Stack<>();
@@ -123,6 +123,14 @@ public class 二叉树 {
         }
     }
 
+    /**
+     * * * * * * 3
+     * * * *  /    \
+     * * *  2        8
+     * *  /  \     /   \
+     * * 9   10   null  4
+     */
+    // 中序，根在中间。 9, 2 , 10, 3, 4, 8
     private static void inOrderTraverseWithStack(TreeNode treeNode) {
         System.out.println();
         Stack<TreeNode> stack = new Stack<>();
@@ -138,7 +146,6 @@ public class 二叉树 {
             }
         }
     }
-
 
 
     // 前序
