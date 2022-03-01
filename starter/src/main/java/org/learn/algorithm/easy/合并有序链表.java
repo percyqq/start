@@ -12,6 +12,35 @@ import java.util.LinkedList;
  */
 public class 合并有序链表 {
 
+    public class ListNodeNew {
+        int val;
+        ListNodeNew next;
+
+        ListNodeNew(int x) {
+            val = x;
+        }
+    }
+
+    public ListNodeNew mergeTwoLists(ListNodeNew l1, ListNodeNew l2) {
+        ListNodeNew dummy = new ListNodeNew(0), p = dummy;
+
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                p.next = l1;
+                l1 = l1.next;
+            } else {
+                p.next = l2;
+                l2 = l2.next;
+            }
+            p = p.next;
+        }
+
+        if (l1 != null) p.next = l1;
+        if (l2 != null) p.next = l2;
+        return dummy.next;
+    }
+
+
     public static class Node<T> implements Comparable<T> {
         T val;
         Node<T> next = null;

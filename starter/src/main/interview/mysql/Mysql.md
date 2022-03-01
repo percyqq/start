@@ -3,20 +3,102 @@
 	mvcc，间隙锁，幻读解决。
 	主从同步，当前读，一致性读。
 
+show global variables like "binlog%";   现在使用的模式：
+    内容：在该模式下，binlog 会记录每次操作的源数据与修改后的目标数据，StreamSets就要求该模式。
+    优势：可以绝对精准的还原，从而保证了数据的安全与可靠，并且复制和数据恢复过程可以是并发进行的
+    劣势：缺点在于 binlog 体积会非常大，同时，对于修改记录多、字段长度大的操作来说，记录时性能消耗会很严重。阅读的时候也需要特殊指令来进行读取数据。
 
-dexplain
-    SELECT * FROM tasks
-    where sub_trade_product = '10002003'
-    limit 5000, 20;
+redolog两阶段提交
+    prepare阶段 -->  2 写binlog  --> 3 commit
 
-explain
-    SELECT * FROM tasks where id in(
-        SELECT id FROM (
-            SELECT id FROM tasks
-            where sub_trade_product = '10002003'
-            limit 5000, 20
-        ) t
-    )
+1、重复率小的列建议生成索引。因为重复数据少，索引树查询更有效率，等价基数越大越好。
+2、数据具有唯一性，建议生成唯一性索引。在数据库的层面，保证数据正确性
+3、频繁group by、order by的列建议生成索引。可以大幅提高分组和排序效率
+4、经常用于查询条件的字段建议生成索引。通过索引查询，速度更快
+
+
+关于 ： 联合索引
+# mysql会一直向右匹配直到遇到范围查询(>、<、between、like)就停止匹配，因而会查询到name字段。
+
+ACID
+A:原子性  undo log
+C:一致性  Consistency)
+I: 隔离型
+D: Durability 持久性       事务一旦提交，它对数据库的改变就应该是永久性的。  [redo log]
+
+
+在可重复读RR隔离级别下，普通查询是[快照读]，是不会看到别的事务插入的数据的。
+    因此，幻读在[当前读]下才会出现。要用间隙锁解决此问题。
+[当前读:
+    1.像select lock in share mode(共享锁)、select for update 、update、insert、delete(排他锁)这些操作都是一种当前读，
+        就是它读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。
+    2、当前读可以认为是悲观锁的具体功能实现]
+
+[快照读:
+    1.不加锁的select就是快照读，即不加锁的非阻塞读；快照读的前提是隔离级别不是串行级别，串行级别下的快照读会退化成当前读；
+        之所以出现快照读的情况，是基于提高并发性能的考虑，快照读的实现是基于多版本并发控制，即MVCC，可以认为MVCC是行锁的一个变种，但它在很多情况下，避免了加锁操作，降低了开销；
+        既然是基于多版本，即快照读可能读到的并不一定是数据的最新版本，而有可能是之前的历史版本。
+    2、快照读就是MVCC思想在MySQL的具体非阻塞读功能实现，MVCC的目的就是为了实现读-写冲突不加锁，提高并发读写性能，而这个读指的就是快照读。
+    3、快照读就是MySQL为我们实现MVCC理想模型的其中一个具体非阻塞读功能。]
+
+
+#来看一个案列分析       https://mp.weixin.qq.com/s/Gc2MifYwxsfbOtoM22cM_w
+[Read Uncommitted]：可以读取未提交记录。此隔离级别不会使用。
+[Read Committed（RC）]：针对当前读，RC隔离级别保证了对读取到的记录加锁（记录锁），存在幻读现象。
+[Repeatable Read（RR）]：针对当前读，RR隔离级别保证对读取到的记录加锁（记录锁），同时保证对读取的范围加锁，
+新的满足查询条件的记录不能够插入（间隙锁），不存在幻读现象。
+[Serializable]：从MVCC并发控制退化为基于锁的并发控制。不区别快照读和当前读，所有的读操作都是当前读，读加读锁（S锁），写加写锁（X锁）。
+在该隔离级别下，读写冲突，因此并发性能急剧下降，在MySQL/InnoDB中不建议使用。
+
+[buffer pool]
+    1、存在的意义是加速查询
+    2、缓冲池(buffer pool) 是一种常见的降低磁盘访问 的机制；
+    3、缓冲池通常以页(page 16K)为单位缓存数据；
+    4、缓冲池的常见管理算法是LRU，memcache，OS，InnoDB都使用了这种算法；
+    5、InnoDB对普通LRU进行了优化：将缓冲池分为老生代和新生代，入缓冲池的页，优先进入老生代，该页被访问，才进入新生代，以解决预读失效的问题页被访问。
+        且在老生代停留时间超过配置阈值的，才进入新生代，以解决批量数据访问，大量热数据淘汰的问题
+预读失效：
+    由于预读(Read-Ahead)，提前把页放入了缓冲池，但最终MySQL并没有从页中读取数据，称为预读失效
+
+exist 和 in 对比：
+    1、in查询时首先查询子查询的表，然后将内表和外表做一个笛卡尔积，然后按照条件进行筛选。
+    2、子查询使用 exists，会先进行主查询，将查询到的每行数据循环带入子查询校验是否存在，过滤出整体的返回数据。
+    3、两表大小相当，in 和 exists 差别不大。内表大，用 exists 效率较高；内表小，用 in 效率较高。
+    4、查询用not in 那么内外表都进行全表扫描，没有用到索引；而not extsts 的子查询依然能用到表上的索引。not exists都比not in要快。
+
+
+
+
+
+explain     SELECT * FROM tasks     where sub_trade_product = '10002003'    limit 5000, 20;
+explain     SELECT * FROM tasks where id in(
+                SELECT id FROM (    SELECT id FROM tasks    where sub_trade_product = '10002003'    limit 5000, 20) t )
+#-- index1: entity_key , app_id  -- index2: app_id, entity_name
+explain SELECT app_id, entity_name FROM nts.entity_config where app_id >= 110800 and entity_name = 'business';
+explain SELECT app_id, entity_name FROM nts.entity_config where app_id = 110800 and entity_name = 'business';
+explain SELECT * FROM nts.entity_config where app_id >= 110800 and entity_name = 'business';
+explain SELECT * FROM nts.entity_config where app_id = 110800 and entity_name = 'business';
+
+select_type, table, partitions, type,   possible_keys, 			    key, 						key_len, ref, 			rows, 		filtered, 	Extra
+SIMPLE, entity_config, NULL,    'range','idx_app_id_entity_name', 'idx_app_id_entity_name',  '8',		 NULL,			'10527',	'10.00',	'Using where; Using index'
+SIMPLE, entity_config, NULL,    'ref',  'idx_app_id_entity_name', 'idx_app_id_entity_name',  '410',   'const,const',  '17', 		'100.00', 	'Using index'
+SIMPLE, entity_config, NULL,    'ALL',  'idx_app_id_entity_name',  NULL, 						NULL,    NULL,          '21055',  	'5.00', 	'Using where'
+SIMPLE, entity_config, NULL,    'ref',  'idx_app_id_entity_name', 'idx_app_id_entity_name',  '410',   'const,const',  '17',		'100.00',	 NULL
+
+type
+    ALL：Full Table Scan， MySQL将遍历全表以找到匹配的行
+    index: Full Index Scan，index与ALL区别为index类型只遍历索引树
+    range:只检索给定范围的行，使用一个索引来选择行
+    ref: 非唯一性索引扫描 表示上述表的连接匹配条件，即哪些列或常量被用于查找索引列上的值
+    eq_ref: 类似ref，区别就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，就是多表连接中使用primary key或者 unique key作为关联条件
+ref
+    列与索引的比较，表示上述表的连接匹配条件，即哪些列或常量被用于查找索引列上的值
+key_len
+    表示索引中使用的字节数，可通过该列计算查询中使用的索引的长度（key_len显示的值为索引字段的最大可能长度，并非实际使用长度，
+    即key_len是根据表定义计算而得，不是通过表内检索出的）
+    不损失精确性的情况下，长度越短越好
+rows
+    估算出结果集行数，表示MySQL根据表统计信息及索引选用情况，估算的找到所需的记录所需要读取的行数
 
 
 
@@ -36,15 +118,6 @@ explain
 那什么情况下会发生明明创建了索引，但是执行的时候并没有通过索引呢？
 哦，索引有关的知识我们暂时就问这么多吧。你们线上数据的事务隔离级别是什么呀？
 
-
-关于 ： 联合索引
-# mysql会一直向右匹配直到遇到范围查询(>、<、between、like)就停止匹配，因而会查询到name字段。
-
-ACID
-    A:原子性  undo log 
-    C:一致性  Consistency)
-    I: 隔离型
-    D: Durability 持久性       事务一旦提交，它对数据库的改变就应该是永久性的。  [redo log]     
 
 
 
@@ -315,13 +388,6 @@ https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961498&idx=1&sn=058097
 
 
 
-#来看一个案列分析       https://mp.weixin.qq.com/s/Gc2MifYwxsfbOtoM22cM_w
-[Read Uncommitted]：可以读取未提交记录。此隔离级别不会使用。
-[Read Committed（RC）]：针对当前读，RC隔离级别保证了对读取到的记录加锁（记录锁），存在幻读现象。
-[Repeatable Read（RR）]：针对当前读，RR隔离级别保证对读取到的记录加锁（记录锁），同时保证对读取的范围加锁，
-    新的满足查询条件的记录不能够插入（间隙锁），不存在幻读现象。
-[Serializable]：从MVCC并发控制退化为基于锁的并发控制。不区别快照读和当前读，所有的读操作都是当前读，读加读锁（S锁），写加写锁（X锁）。
-    在该隔离级别下，读写冲突，因此并发性能急剧下降，在MySQL/InnoDB中不建议使用。
 
 
 InnoDB是高并发互联网场景最为推荐的存储引擎，根本原因，  

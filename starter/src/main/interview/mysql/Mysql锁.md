@@ -19,6 +19,10 @@ https://segmentfault.com/a/1190000012650596
     With REPEATABLE READ isolation level, the snapshot is based on the time when the
         first read operation is performed.
     使⽤REPEATABLE READ隔离级别，快照是基于执⾏第⼀个读操作的时间。
+!!
+    ===>>>   补充一点的是：：  update 是当前读，A事务：快照执行后（比如开启了一个select查询），B事务执行了更新操作，
+                            A事务的，当前select 肯定读不到，但是此时 A事务执行的 update语句是可以读到 B事务的操作的!
+!!
     --------------------------------------------------------------------------------
     With READ COMMITTED isolation level, the snapshot is reset to the time of each
         consistent read operation.

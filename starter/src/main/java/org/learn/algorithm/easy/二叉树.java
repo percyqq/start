@@ -53,7 +53,7 @@ public class 二叉树 {
         //inOrderTraverseWithStack(treeNode);
         System.out.println();
         postOrderTraverse(treeNode);    //9  10  2  4  8  3
-        postOrderTraverseWithStack1(treeNode);
+        postOrderTraverseWithStack2(treeNode);
     }
 
     // 后续。 节点 - 右 - 左， 依次入栈
@@ -62,11 +62,11 @@ public class 二叉树 {
     private static void postOrderTraverseWithStack1(TreeNode treeNode) {
         System.out.println();
         Stack<TreeNode> stack = new Stack<>();
-        Stack<TreeNode> head = new Stack<>();//存头节点的
+        Stack<TreeNode> head_right_left = new Stack<>(); //依次存入，头节点 - 右 - 左，出栈时即为所得顺序
         while (treeNode != null || !stack.isEmpty()) {
             while (treeNode != null) {
                 stack.push(treeNode);
-                head.push(treeNode);
+                head_right_left.push(treeNode);
                 treeNode = treeNode.rightChild;
             }
             if (!stack.isEmpty()) {
@@ -74,8 +74,8 @@ public class 二叉树 {
                 treeNode = treeNode.leftChild;
             }
         }
-        while (!head.isEmpty()) {
-            treeNode = head.pop();
+        while (!head_right_left.isEmpty()) {
+            treeNode = head_right_left.pop();
             System.out.print(treeNode.data + "  ");
         }
     }
@@ -87,23 +87,27 @@ public class 二叉树 {
     //3     3
     private static void postOrderTraverseWithStack2(TreeNode treeNode) {
         System.out.println();
-        LinkedList<Integer> linkedList = new LinkedList<>();
-        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> head_right_left = new Stack<>(); //依次存入，头节点 - 右 - 左，出栈时即为所得顺序
+        Stack<TreeNode> head_left_right = new Stack<>(); //依次存入，头节点 - 左 - 右
         if (treeNode != null) {
-            stack.push(treeNode);
+            head_left_right.push(treeNode);
         }
 
-        while (!stack.isEmpty()) {
-            TreeNode head = stack.pop();
-            linkedList.addFirst(head.data);
+        while (!head_left_right.isEmpty()) {
+            TreeNode head = head_left_right.pop();
+            head_right_left.push(head);
             if (head.leftChild != null) {
-                stack.add(head.leftChild);
+                head_left_right.add(head.leftChild);
             }
             if (head.rightChild != null) {
-                stack.add(head.rightChild);
+                head_left_right.add(head.rightChild);
             }
         }
-        linkedList.stream().forEach(item -> System.out.println(item));
+
+        while (!head_right_left.isEmpty()) {
+            treeNode = head_right_left.pop();
+            System.out.print(treeNode.data + "  ");
+        }
     }
 
     //前序： 根在前。 3  2  9  10  8  4

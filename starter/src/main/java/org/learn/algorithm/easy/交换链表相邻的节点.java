@@ -7,21 +7,33 @@ package org.learn.algorithm.easy;
 public class 交换链表相邻的节点 {
 
     public static void main(String[] args) {
-        ListNode node = ListNode.create(1, 2, 3, 5);
+        ListNode node = ListNode.create(1, 2, 3, 4);
         System.out.println(node);
+
+        ListNode r = reverse(node);
+        System.out.println(r);
     }
 
+
     // 1 -> 2 -> 3 -> 4
-    // 1 ,  2 -> 3 -> 4
-    private ListNode reverse(ListNode head) {
+    // ① newList = 4 进入最内圈递归，此时 head == 3， 递归完就成了： 4 -> 3
+    // ② newList = 2 进入上一层递归，此时 head == 2,  2 -> 4 ->3
+    private static ListNode reverse(ListNode head) {
+        // 1.递归结束条件
         if (head == null || head.next == null) {
             return head;
         }
-
-        ListNode newNode = reverse(head.next);
-
-
-        return null;
+        // 递归反转 子链表
+        ListNode newList = reverse(head.next);
+        // 改变 1，2节点的指向。
+        // 通过 head.next获取节点2
+        ListNode t1 = head.next;
+        // 让 2 的 next 指向 2
+        t1.next = head;
+        // 1 的 next 指向 null.
+        head.next = null;
+        // 把调整之后的链表返回。
+        return newList;
     }
 
     //Definition for singly-linked list.

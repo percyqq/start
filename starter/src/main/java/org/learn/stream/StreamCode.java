@@ -8,8 +8,13 @@ import lombok.Data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -44,16 +49,12 @@ public class StreamCode {
     }
 
     public static void main(String[] args) {
-        List<Integer> d = Lists.newArrayList(1, 2, 3, 4, 5).stream().filter(e -> {
-            boolean wtf = e % 2 == 0;
-            return wtf;
-        }).collect(Collectors.toList());
+        List<Integer> d = Lists.newArrayList(1, 2, 3, 4, 5).stream().filter(e -> e % 2 == 0).collect(Collectors.toList());
         System.out.println(d);
     }
 
     public static void multiSort() {
         List<BigVo> list = new ArrayList<>();
-
         Function<BigVo, Date> function = bigVo -> {
             Optional<Date> showTime = Optional.ofNullable(bigVo.getCityConfig()).map(CityConfig::getStartTime);
             Optional<Date> searchTime = Optional.ofNullable(bigVo.getHouseSearchRecord()).map(HouseSearchRecord::getCreateTs);
@@ -67,6 +68,46 @@ public class StreamCode {
 
         list.stream().sorted(comparator).collect(Collectors.toList());
     }
+
+    private void x(){
+        List<Integer> data = new ArrayList<>();
+        List<Integer> businessVoList = parallelList(new ForkJoinPool(4), data, integer -> integer);
+
+    }
+
+
+    public static <In, Out> List<Out> parallelList(ForkJoinPool customThreadPool, List<In> data, Function<In, Out> function) {
+        List<Out> ret;
+        try {
+            ret = customThreadPool.submit(() -> data.parallelStream().map(function).collect(Collectors.toList())).get();
+        } catch (InterruptedException e) {
+            ret = Collections.emptyList();
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            ret = Collections.emptyList();
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public static <T, K, U> Map<K, U> parallelMap(ForkJoinPool customThreadPool, List<T> data, Collector<T, ?, Map<K, U>> collector) {
+        Map<K, U> ret;
+        try {
+            ret = customThreadPool.submit(() -> data.parallelStream().collect(collector)).get();
+        } catch (InterruptedException e) {
+            ret = Collections.emptyMap();
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            ret = Collections.emptyMap();
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
 
     public static void compare() throws ParseException {
         List<CityConfig> dd = new ArrayList<>();
@@ -93,11 +134,30 @@ public class StreamCode {
         Map<String, CityConfig> ss = dd.stream().collect(
                 Collectors.toMap(i -> i.getHouseCode().toString(), Function.identity(),
                         BinaryOperator.maxBy(Comparator.comparing(CityConfig::getStartTime))));
-        ss.forEach((k, v) -> {
-            System.out.println(v.getHouseCode() + " ==> " + v.getStartTime());
-        });
+        ss.forEach((k, v) -> System.out.println(v.getHouseCode() + " ==> " + v.getStartTime()));
     }
 
+
+    private void 按照属性进行过滤() {
+        List<按照属性进行过滤User> wtf = new ArrayList<>();
+        List<按照属性进行过滤User> data = wtf.stream().filter(按照属性进行过滤_distinctByKey(user -> user.getUserCode())).map(recipient -> {
+            按照属性进行过滤User user = new 按照属性进行过滤User();
+            user.setUserCode(recipient.getUserCode());
+            user.setName(recipient.getName());
+            return user;
+        }).collect(Collectors.toList());
+    }
+
+    <T> Predicate<T> 按照属性进行过滤_distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object,Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    @Data
+    public class 按照属性进行过滤User {
+        private String userCode;
+        private String name;
+    }
 
     private CityConfig getNextToAssign(List<CityConfig> configs) {
         Comparator wtf = Comparator.comparing(
@@ -105,13 +165,11 @@ public class StreamCode {
                 .thenComparing(CityConfig::getOrder);
         Optional<CityConfig> optionalCityConfig = configs.stream().min(wtf);
         return optionalCityConfig.orElseThrow(IllegalStateException::new);
-
     }
 
     @Data
     public static class BigVo {
         private CityConfig cityConfig;
-
         private HouseSearchRecord houseSearchRecord;
     }
 
@@ -122,14 +180,11 @@ public class StreamCode {
 
     @Data
     public static class CityConfig {
-
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         private Date latestAssignTime;
 
         private Integer order;
-
         private Date startTime;
-
         private Integer houseCode;
     }
 
@@ -147,14 +202,12 @@ public class StreamCode {
 
 
     public void toMapUseFunc() {
-
         List<Dish> dishs = new ArrayList<>();
 
         // 写2次的function
         Function<String, Long> parseLong = str -> Long.parseLong(str);
         Map<Long, Dish> dishMap1 = dishs.stream().collect(
-                Collectors.toMap(item -> parseLong.apply(item.getId()), Function.identity(),
-                        (oldValue, newValue) -> newValue));
+                Collectors.toMap(item -> parseLong.apply(item.getId()), Function.identity(), (oldValue, newValue) -> newValue));
 
         // 写一次的function
         Function<Dish, Long> keyMapper = dish -> {
